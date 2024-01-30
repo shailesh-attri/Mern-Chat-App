@@ -3,7 +3,6 @@ import "./Chat.scss";
 import user from "../assets/user.jpg";
 import { MdLogout } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
-import { BsEmojiSmileFill } from "react-icons/bs";
 import { IoAttachSharp } from "react-icons/io5";
 import { VscSend } from "react-icons/vsc";
 import EmojiPicker from "emoji-picker-react";
@@ -28,9 +27,15 @@ const Chat = () => {
     });
     console.log(userMessage);
     setInputMessage("");
-    setShowEmoji((prev) => !prev);
+    setShowEmoji(false);
     // Clear the input field after submitting
   };
+  useEffect(() => {
+    const chatBox = document.getElementById("chatBox");
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }, [userMessage]);
   useEffect(() => {
     console.log(userMessage);
   }, [userMessage]);
@@ -105,7 +110,7 @@ const Chat = () => {
           </div>
         </div>
         <div className="chat">
-          <div className="chatBox">
+          <div className="chatBox" id='chatBox'>
             <div className="friendMsg">
               <span className="received">
                 <span>Lorem ipsum, dolor sit amet consectetur</span>
