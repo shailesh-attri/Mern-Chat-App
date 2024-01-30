@@ -41,7 +41,8 @@ const Chat = () => {
   }, [userMessage]);
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.key === "Enter") {
+      
+      if (e.key === "Enter" && inputMessage.trim() !== "") {
         handleInputData(e);
       }
     };
@@ -53,7 +54,7 @@ const Chat = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [handleInputData]);
+  }, [handleInputData,inputMessage]);
   return (
     <div className="ChatContainer">
       {/* FriendList */}
@@ -65,7 +66,10 @@ const Chat = () => {
             </div>
             <span className="userName">Shailesh Attri</span>
           </div>
+          <span className="MdLogout">
+
           <MdLogout />
+          </span>
         </div>
         <div className="SearchBar">
           <input type="text" placeholder="Search for friends" />

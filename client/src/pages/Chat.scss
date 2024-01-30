@@ -37,6 +37,9 @@
           font-weight: bold !important;
         }
       }
+      .MdLogout{
+        cursor: pointer;
+      }
     }
     .SearchBar {
       margin: 10px 10px;
@@ -201,7 +204,7 @@
     .chat {
       display: flex;
       flex-direction: column;
-
+      align-items: stretch;
       justify-content: end;
       width: 100%;
 
@@ -219,7 +222,6 @@
         .userMsg {
           display: flex;
           flex-direction: column;
-          
           gap: 10px;
           margin-bottom: 10px; /* Add some margin between messages */
         }
@@ -227,10 +229,9 @@
         .sender {
           display: flex;
           flex-direction: column;
-          
-          background-color: #e6e6e6; /* Set a background color for user messages */
+          background-color: #c4f78e; /* Set a background color for user messages */
           padding: 8px;
-          border-radius: 8px;
+          border-radius: 8px 0 8px 8px;
           max-width: 50%; /* Set a maximum width for user messages */
           word-wrap: break-word;
           align-self: flex-end; /* Allow long words to break into a new line */
@@ -239,9 +240,9 @@
         .received {
           display: flex;
           flex-direction: column;
-          background-color: #f0f0f0; /* Set a background color for friend messages */
+          border-radius: 0 8px 8px 8px;
+          background-color: #ececec; /* Set a background color for friend messages */
           padding: 8px;
-          border-radius: 8px;
           max-width: 50%; /* Set a maximum width for friend messages */
           word-wrap: break-word;
           align-self: flex-start; /* Allow long words to break into a new line */
