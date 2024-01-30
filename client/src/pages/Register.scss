@@ -1,0 +1,90 @@
+.mainContainer {
+   
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  .header {
+    width: 100%;
+    text-align: end;
+   
+    p{
+        margin-right: 1rem;
+    }
+  
+  }
+  .registerContainer {
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 10px);
+  
+    .container {
+      margin-top: 0;
+      .LogoText {
+        color: rgb(85, 9, 237);
+        text-align: center;
+      }
+  
+      .form {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        gap: 20px;
+  
+        input {
+          background-color: transparent;
+          width: 400px;
+          border-radius: 5px;
+          padding: 10px 0;
+          padding-left: 5px;
+          border: 1px solid rgb(127, 125, 130);
+        }
+  
+        input:focus {
+          outline: 1px solid rgb(92, 54, 246);
+        }
+        button {
+          color: white;
+          border: 0;
+          border-radius: 10px;
+          text-align: center;
+          width: 100%;
+          padding: 5px;
+          height: 40px;
+          background-color: rgb(85, 9, 237);
+          cursor: pointer;
+        }
+      }
+      p {
+        font-size: 10px;
+        text-align: end;
+      }
+      .ErrMsg {
+        padding: 0.3rem;
+        text-align: center;
+        border-radius: 5px;
+        background-color: rgb(244, 119, 119);
+      }
+  
+      .password-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .passwordShow,
+        .passwordHide {
+          cursor: pointer;
+          position: absolute;
+          right: 10px;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
