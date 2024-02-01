@@ -52,8 +52,8 @@ const Login = () => {
 
         setErrMsg(false);
         setTimeout(() => {
-          setSuccessResponse(true);
           setHandleValidationMessage(response.data.message);
+          setSuccessResponse(true);
           setLoading(false);
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
