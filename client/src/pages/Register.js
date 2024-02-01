@@ -20,22 +20,15 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    
   });
-  
+
   const navigate = useNavigate();
   const handleChange = (e) => {
-    
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
 
-    
-    
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-      });
-    
-    
     if (e.target.name === "password" && e.target.value.length > 0) {
       setIsPasswordTyped(true);
     } else {
@@ -43,57 +36,58 @@ const Register = () => {
     }
   };
   const handleRegister = async (e) => {
-    console.log("FormData",formData)
+    console.log("FormData", formData);
     e.preventDefault();
     const validateError = handleValidations();
-    
+
     if (!validateError) {
       try {
         const response = await axios.post(registerRoute, formData);
         if (response.status === 200) {
-          setHandleBackendMessage("Registered successfully");
-          setRegistered(false);
-          setHandleValidationMessage(response.message)
+          setErrMsg(false);
+          setHandleValidationMessage(response.message);
           setLoading(true);
           setTimeout(() => {
+            setHandleBackendMessage(response.data.message);
             setSuccessMsg(true);
             setRegistered(false);
             setLoading(false);
           }, 2000);
         }
+        if (response.status === 201) {
+          // Validation error, e.g., username already exists
+          setErrMsg(false);
+          setLoading(true);
+          setTimeout(() => {
+            setLoading(false);
+            setHandleValidationMessage(response.data.message);
+            setErrMsg(true);
+          }, 2000);
+        }
+        if (response.status === 202) {
+          //email already exists error
+          setErrMsg(false);
+          setLoading(true);
+          setTimeout(() => {
+            setLoading(false);
+            setHandleValidationMessage(response.data.message);
+            setErrMsg(true);
+          }, 2000);
+        }
       } catch (error) {
         console.error(error.response);
 
-      // Check the status code and handle different error scenarios
-      if (error.response.status === 422) {
-        // Validation error, e.g., required fields are missing
-        setErrMsg(true);
-        setHandleValidationMessage(error.response.data.message);
-      } else if (error.response.status === 200) {
-        // User already exists error
-        setErrMsg(true);
-        setHandleValidationMessage(error.response.data.message);
-      } else {
         // Other server errors
-        setErrMsg(true);
         setHandleValidationMessage("User registration failed");
-      }
+        setErrMsg(true);
+
         setRegistered(false);
         setSuccessMsg(false);
-        setErrMsg(false);
-
-        setLoading(true);
-        setTimeout(() => {
-          setSuccessMsg(true);
-          setErrMsg(true);
-          setRegistered(true);
-
-          setLoading(false);
-        }, 2000);
+        setLoading(false);
       }
     }
   };
-  
+
   const handleValidations = (e) => {
     const usernameRegex = /^(?![A-Z0-9])[A-Za-z0-9_]*$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -119,20 +113,24 @@ const Register = () => {
     setShowPassword((prevValue) => !prevValue);
   };
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/");
   };
   return (
     <div className="mainContainer">
       <div className="header">
         <p>
-          Already have an account? <Link to="/login">Login</Link>
+          Already have an account? <Link to="/">Login</Link>
         </p>
       </div>
       {isRegistered && (
         <div className="registerContainer">
           <div className="container">
             <h1 className="LogoText">Nexus</h1>
-            <form  enctype="multipart/form-data" className="form" onSubmit={handleRegister}>
+            <form
+              enctype="multipart/form-data"
+              className="form"
+              onSubmit={handleRegister}
+            >
               <input
                 type="text"
                 placeholder="Full name"
@@ -154,7 +152,7 @@ const Register = () => {
                 required
                 onChange={handleChange}
               />
-              
+
               <div className="password-container">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -182,14 +180,24 @@ const Register = () => {
                   onChange={handleChange}
                 />
               </div>
-              {/* <input
-                type="file"
-                placeholder="profile picture"
-                name="profilePicture"
-                required
-                onChange={handleChange}
-              /> */}
-              <button type="submit">Register</button>
+
+              <button type="submit">
+                {isLoading ? (
+                  <div className="loader">
+                    <Oval
+                      visible={true}
+                      height="35"
+                      width="30"
+                      color="#fff"
+                      ariaLabel="triangle-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  </div>
+                ) : (
+                  "Register"
+                )}
+              </button>
             </form>
             {/* Display error message */}
             {ErrMsg && <p className="ErrMsg">{handleValidationMessage}</p>}
@@ -226,8 +234,6 @@ const Register = () => {
           <p>Please wait ...</p>
         </div>
       )}
-
-      
     </div>
   );
 };

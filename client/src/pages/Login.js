@@ -3,8 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Register.scss";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import { Oval } from "react-loader-spinner";
+import axios from "axios";
+import { loginRoute } from "../utils/APIRoutes";
 const Login = () => {
+  const [isLoading, setLoading] = useState(false);
   const [ErrMsg, setErrMsg] = useState(false);
+  const [SuccessResponse, setSuccessResponse] = useState(false);
   const [handleValidationMessage, setHandleValidationMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordTyped, setIsPasswordTyped] = useState(false);
@@ -25,11 +30,39 @@ const Login = () => {
       setIsPasswordTyped(false);
     }
   };
-  const handleRegister = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
-    console.log(loginData);
-    setLoginData("");
-    navigate("/login");
+    try {
+      const res = await axios.post(loginRoute,loginData )
+      if(res.status === 200){
+        setSuccessResponse(false);
+          setLoading(true);
+          setErrMsg(false)
+          setTimeout(() => {
+            setSuccessResponse(true)
+            setHandleValidationMessage(res.data.message);
+            setLoading(false);
+            setTimeout(() => {
+              setHandleValidationMessage("Redirecting Please wait...");
+              setTimeout(() => {
+                navigate('/chats')
+              },1000)
+            },1000)
+          }, 2000);
+      }
+      
+    } catch (error) {
+      // Other server errors
+      setErrMsg(false)
+      setLoading(true);
+      setSuccessResponse(false)
+      setTimeout(() => {
+        setErrMsg(true)
+        setHandleValidationMessage("Invalid credentials. Please try again");
+        setLoading(false);
+      }, 2000);
+      
+    }
   };
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevValue) => !prevValue);
@@ -46,7 +79,7 @@ const Login = () => {
       <div className="registerContainer">
         <div className="container">
           <h1 className="LogoText">Nexus</h1>
-          <form action="" className="form" onSubmit={handleRegister}>
+          <form action="" className="form" onSubmit={handleLogin}>
             <input
               type="email"
               placeholder="Email"
@@ -71,8 +104,26 @@ const Login = () => {
               </span>
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit">
+                {isLoading ? (
+                  <div className="loader">
+                    <Oval
+                      visible={true}
+                      height="35"
+                      width="30"
+                      color="#fff"
+                      ariaLabel="triangle-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  </div>
+                ) : (
+                  "Login"
+                )}
+              </button>
           </form>
+          {ErrMsg && <p className="ErrMsg">{handleValidationMessage}</p>}
+          {SuccessResponse && <p className="SuccessMsg">{handleValidationMessage}</p>}
         </div>
       </div>
     </div>
