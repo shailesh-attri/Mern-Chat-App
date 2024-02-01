@@ -99,6 +99,7 @@
           font-size: 15px;
         }
       }
+      
     }
   }
   .SuccessMsg{
@@ -140,4 +141,13 @@
   }
   
   
+}
+.reset-password{
+ font-size: 20px;
+ color: gray;
+  text-align: center;
+  width: 100%;
+  span{
+    cursor: pointer;
+  }
 }
