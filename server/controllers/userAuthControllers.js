@@ -3,10 +3,14 @@ import { user } from "../Models/user.model.js";
 import HttpError from "../Models/error.model.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import crypto from "crypto";
-import { readdirSync } from "fs";
+import twilio from 'twilio';
+
+
+
+
 const otpMap = new Map();
-const userController = {
+
+const userAuthController = {
   // Controller for registration
   register: async (req, res, next) => {
     try {
@@ -45,42 +49,36 @@ const userController = {
 
   //  controller for login form
   login: async (req, res, next) => {
+    const { email, password } = req.body;
     try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return next(new HttpError({ message: "Fill in the required fields" }));
-      }
-
       const newEmail = email.toLowerCase();
       const User = await user.findOne({ email: newEmail });
-
       if (!User) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        res.status(404).send({ message: "User not found" });
+      } else {
+        const comparePassword = await bcrypt.compare(password, User.password);
+
+        if (!comparePassword) {
+          return res.status(401).json({ message: "Invalid password" });
+        }
+
+        const { _id: id, fullName: fullName } = User;
+        const token = jwt.sign({ id, fullName }, process.env.JWT_SECRET_KEY, {
+          expiresIn: "1d",
+        });
+
+        return res
+          .status(200)
+          .json({ token, id, fullName, message: "Credentials matched" });
       }
-
-      const comparePassword = await bcrypt.compare(password, User.password);
-
-      if (!comparePassword) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
-
-      const { _id: id, fullName: fullName } = User;
-      const token = jwt.sign({ id, fullName }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1d",
-      });
-
-      return res
-        .status(200)
-        .json({ token, id, fullName, message: "Credentials matched" });
     } catch (error) {
       console.error(error);
+      console.log("Error code: " + error.code);
       return next(error);
     }
   },
- email_verify: async (req, res, next) => {
+  email_verify: async (req, res, next) => {
     const { emailReset } = req.body;
-
-    console.log("emailReset", emailReset);
     try {
       const newEmail = emailReset.toLowerCase();
 
@@ -122,6 +120,7 @@ const userController = {
       console.log(error.message);
     }
   },
+  
   verify_otp: async (req, res, next) => {
     const { otp, emailReset } = req.body;
     console.log("frontend OTP", otp);
@@ -132,15 +131,14 @@ const userController = {
       const storedOtp = otpMap.get(newEmail);
 
       if (otp === storedOtp) {
-        res.status(200).json({message:"OTP verified successfully"});
+        res.status(200).json({ message: "OTP verified successfully" });
       } else {
         res.status(200).json("Invalid OTP found");
       }
       otpMap.delete(newEmail);
     } catch (error) {
       // res.status(500).json({ message: "Invalid OTP" });
-      // res.status(500).json({ message: error.message });
-      console.log(error.message);
+      res.status(500).json({ message: error.message });
     }
   },
   reset_password: async (req, res, next) => {
@@ -175,20 +173,5 @@ const userController = {
       res.status(500).json({ message: "Password update failed" });
     }
   },
-
-  //   controller for user profile
-  userProfile: async (req, res) => {
-    res.send("User profile");
-  },
-
-  // edit user profile
-  editProfile: async (req, res) => {
-    res.send("Edit profile");
-  },
-
-  // change user profile Picture
-  changeAvatar: async (req, res) => {
-    res.send("User profile picture changed");
-  },
 };
-export default userController;
+export default userAuthController;

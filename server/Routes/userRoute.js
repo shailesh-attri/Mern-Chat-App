@@ -1,16 +1,12 @@
-import express from 'express';
-import userController from '../controllers/userControllers.js'
-const router = express.Router();
-
-router.post('/register', userController.register);
-router.post('/login', userController.login);
-router.get('/:id', userController.userProfile);
-router.post('/change-avatar', userController.changeAvatar);
-router.patch('/reset_password', userController.reset_password);
-router.post('/verify_otp', userController.verify_otp);
-router.post('/edit-profile', userController.editProfile);
-router.post('/email_verify', userController.email_verify);
 
 
+// User Route
+router.get('/:id', userAuthController.getUser)
+router.get('/getAllUsers', userAuthController.getAllUsers)
 
-export default router;
+router.put('/edit_profile', userAuthController.editProfile);
+router.put('/:id/follow', userAuthController.followUser);
+router.put('/:id/unFollow', userAuthController.unFollowUser);
+
+router.patch('/change_avatar', userAuthController.changeAvatar);
+router.delete('/delete_profile', userAuthController.deleteProfile)
