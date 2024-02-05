@@ -151,3 +151,57 @@
     cursor: pointer;
   }
 }
+.OtpContainer{
+  
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  .LogoText {
+    color: rgb(85, 9, 237);
+    text-align: center;
+    
+    
+  }
+  .otpForm {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+  
+    input {
+      background-color: transparent;
+      width: 400px;
+      border-radius: 5px;
+      padding: 10px 0;
+      padding-left: 5px;
+      border: 1px solid rgb(127, 125, 130);
+    }
+  
+    input:focus {
+      outline: 1px solid rgb(92, 54, 246);
+    }
+    button {
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      text-align: center;
+      width: 100%;
+      padding: 5px;
+      height: 40px;
+      background-color: rgb(85, 9, 237);
+      cursor: pointer;
+  
+      .loader{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+      }
+    }
+  }
+}

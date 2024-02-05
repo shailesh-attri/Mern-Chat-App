@@ -3,12 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Register.scss";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { registerRoute } from "../utils/APIRoutes.js";
+import { registerRoute,registrationVerifyRoute } from "../utils/APIRoutes.js";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
 const Register = () => {
   const [isRegistered, setRegistered] = useState(true);
+  const [SuccessResponse, setSuccessResponse] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const [ErrMsg, setErrMsg] = useState(false);
   const [SuccessMsg, setSuccessMsg] = useState(false);
   const [handleValidationMessage, setHandleValidationMessage] = useState("");
@@ -21,6 +23,17 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const [otp, setOtpRequest] = useState({
+    otp: "",
+  });
+  const handleOTP = (e) => {
+    
+
+    setOtpRequest({
+      ...otp,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -37,6 +50,7 @@ const Register = () => {
   };
   const handleRegister = async (e) => {
     console.log("FormData", formData);
+    setLoading(true);
     e.preventDefault();
     const validateError = handleValidations();
 
@@ -44,36 +58,26 @@ const Register = () => {
       try {
         const response = await axios.post(registerRoute, formData);
         if (response.status === 200) {
-          setErrMsg(false);
-          setHandleValidationMessage(response.message);
-          setLoading(true);
+          sessionStorage.setItem("NewUserOTP_Token", JSON.stringify(response.data));
+          setSuccessResponse(false);
+
+        setErrMsg(false);
+        
+         
+          setHandleValidationMessage(response.data.message);
+          setSuccessResponse(true);
+          setLoading(false);
           setTimeout(() => {
-            setHandleBackendMessage(response.data.message);
-            setSuccessMsg(true);
-            setRegistered(false);
-            setLoading(false);
-          }, 2000);
+            setHandleValidationMessage("Redirecting Please wait...");
+            setTimeout(() => {
+              setSuccessResponse(false);
+              setRegistered(false)
+              setIsVerified(true)
+            }, 1000);
+          }, 1000);
+        
         }
-        if (response.status === 201) {
-          // Validation error, e.g., username already exists
-          setErrMsg(false);
-          setLoading(true);
-          setTimeout(() => {
-            setLoading(false);
-            setHandleValidationMessage(response.data.message);
-            setErrMsg(true);
-          }, 2000);
-        }
-        if (response.status === 202) {
-          //email already exists error
-          setErrMsg(false);
-          setLoading(true);
-          setTimeout(() => {
-            setLoading(false);
-            setHandleValidationMessage(response.data.message);
-            setErrMsg(true);
-          }, 2000);
-        }
+       
       } catch (error) {
         console.error(error.response);
 
@@ -81,12 +85,58 @@ const Register = () => {
         setHandleValidationMessage("User registration failed");
         setErrMsg(true);
 
-        setRegistered(false);
+        
         setSuccessMsg(false);
         setLoading(false);
       }
     }
   };
+  const requestData = {
+    ...formData,
+    ...otp
+  }
+  const handle_OTP_Verify = async(e)=>{
+    e.preventDefault();
+    const user = JSON.parse(sessionStorage.getItem("NewUserOTP_Token"))
+    setLoading(true);
+    
+    try {
+      const response = await axios.post(registrationVerifyRoute, requestData ,{
+        headers: {
+          Authorization:  `Bearer ${user.token}`,
+          "Content-Type": "application/json"
+        },
+      })
+      if(response.status === 200) {
+        localStorage.setItem("userData",
+        JSON.stringify(response.data)
+      );
+        setSuccessResponse(false);
+
+        setErrMsg(false);
+        
+        
+          setSuccessMsg(true)
+          setHandleValidationMessage(response.data.message);
+          setLoading(false);
+          setIsVerified(false)
+          setTimeout(() => {
+            setSuccessResponse(true);
+            setHandleValidationMessage("Redirecting Please wait...");
+            setTimeout(() => {
+              setSuccessResponse(false);
+              setRegistered(false)
+              
+              setSuccessMsg(true)
+              navigate('/chats')
+            }, 1000);
+          }, 2000);
+       
+      }
+    } catch (error) {
+      setHandleBackendMessage("Registration failed")
+    }
+  }
 
   const handleValidations = (e) => {
     const usernameRegex = /^(?![A-Z0-9])[A-Za-z0-9_]*$/;
@@ -122,7 +172,7 @@ const Register = () => {
           Already have an account? <Link to="/">Login</Link>
         </p>
       </div>
-      {isRegistered && (
+      {isRegistered && 
         <div className="registerContainer">
           <div className="container">
             <h1 className="LogoText">Nexus</h1>
@@ -199,11 +249,51 @@ const Register = () => {
                 )}
               </button>
             </form>
+            {SuccessResponse && (
+            <p className="SuccessMsg">{handleValidationMessage}</p>
+          )}
             {/* Display error message */}
             {ErrMsg && <p className="ErrMsg">{handleValidationMessage}</p>}
           </div>
         </div>
-      )}
+      }
+      {isVerified && 
+      <div className="OtpContainer">
+        <h1 className="LogoText">Nexus</h1>
+      <form  className="otpForm" onSubmit={handle_OTP_Verify}>
+                  <input
+                    type="text"
+                    placeholder="Enter your OTP"
+                    name="otp"
+                    value={otp.otp}
+                    required
+                    onChange={handleOTP}
+                  />
+
+                  <button type="submit">
+                    {isLoading ? (
+                      <div className="loader">
+                        <Oval
+                          visible={true}
+                          height="35"
+                          width="30"
+                          color="#fff"
+                          ariaLabel="triangle-loading"
+                          wrapperStyle={{}}
+                          wrapperClass=""
+                        />
+                      </div>
+                    ) : (
+                      "Verify"
+                    )}
+                  </button>
+                </form>
+      
+      </div>
+      }
+      {SuccessResponse && (
+            <p className="SuccessMsg">{handleValidationMessage}</p>
+          )}
       {SuccessMsg && (
         <div className="SuccessMsg">
           <div className="Message">
@@ -214,26 +304,13 @@ const Register = () => {
               alt="checked-2--v1"
             />
 
-            <p id="message">{handleBackendMessage}</p>
+            <p id="message">{handleValidationMessage}</p>
           </div>
-          <button onClick={handleLogin}>Login</button>
+          
         </div>
       )}
 
-      {isLoading && (
-        <div className="loading">
-          <Oval
-            visible={true}
-            height="80"
-            width="80"
-            color="#4fa94d"
-            ariaLabel="triangle-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-          />
-          <p>Please wait ...</p>
-        </div>
-      )}
+      
     </div>
   );
 };

@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 import Register from "./pages/Register";
-import ResetPassword from "./pages/ResetPassword";
 import { EmailContextProvider } from "./utils/EmailContext";
 const App = () => {
   return (
@@ -13,10 +12,6 @@ const App = () => {
           <Route path="/chats" element={<Chat></Chat>}></Route>
           <Route path="/" element={<Login></Login>}></Route>
           <Route path="/register" element={<Register></Register>}></Route>
-          <Route
-            path="/reset-password"
-            element={<ResetPassword></ResetPassword>}
-          ></Route>
         </Routes>
       </EmailContextProvider>
     </BrowserRouter>

@@ -9,11 +9,12 @@ import {
   loginRoute,
   EmailVerifyRoute,
   verify_otpRoute,
+  ResetPasswordRoute
 } from "../utils/APIRoutes";
-import { EmailContext } from "../utils/EmailContext";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
-  const { sendEmail, ContextEmail } = useContext(EmailContext);
-  console.log("ContextEmail in Login", ContextEmail);
+  const [isNewPassword, setIsNewPassword] = useState(false)
   const [isLoading, setLoading] = useState(false);
   const [isReset, setReset] = useState(false);
   const [ErrMsg, setErrMsg] = useState(false);
@@ -29,13 +30,12 @@ const Login = () => {
   });
   const [otp, setOtpRequest] = useState({
     otp: "",
-    emailReset: ContextEmail,
   });
 
   const [emailData, setEmailData] = useState({ emailReset: "" });
   const handleEmail = (e) => {
     setEmailData({ [e.target.name]: e.target.value });
-    console.log(emailData);
+
     setOtpRequest({
       ...otp,
       [e.target.name]: e.target.value,
@@ -43,7 +43,7 @@ const Login = () => {
   };
   const handleEmailVerify = async (e) => {
     e.preventDefault();
-    sendEmail(emailData.emailReset);
+   
     setLoading(true);
     try {
       const response = await axios.post(EmailVerifyRoute, emailData);
@@ -52,6 +52,8 @@ const Login = () => {
 
         setErrMsg(false);
         setTimeout(() => {
+          sessionStorage.setItem("UserOTP_Token", JSON.stringify(response.data));
+         
           setHandleValidationMessage(response.data.message);
           setSuccessResponse(true);
           setLoading(false);
@@ -79,10 +81,17 @@ const Login = () => {
     }
   };
   const handleOTPVerify = async (e) => {
+    const user = JSON.parse(sessionStorage.getItem("UserOTP_Token"));
+
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(verify_otpRoute, otp);
+      const response = await axios.post(verify_otpRoute, otp, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      });
       if (response.status === 200) {
         setSuccessResponse(false);
 
@@ -94,7 +103,7 @@ const Login = () => {
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
             setTimeout(() => {
-              navigate("/reset-password");
+              setIsNewPassword(true)
             }, 1000);
           }, 1000);
         }, 3000);
@@ -131,7 +140,15 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await axios.post(loginRoute, loginData);
+      // Using localStorage
+      localStorage.setItem("userData",
+        JSON.stringify(res.data)
+      );
       if (res.status === 200) {
+        console.log("userData", res);
+        const userOTPData = res.data
+        
+        
         setSuccessResponse(false);
 
         setErrMsg(false);
@@ -141,6 +158,7 @@ const Login = () => {
           setLoading(false);
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
+            toast.success("Logged in successfully")
             setTimeout(() => {
               navigate("/chats");
             }, 1000);
@@ -150,7 +168,7 @@ const Login = () => {
     } catch (error) {
       // Other server errors
       setErrMsg(false);
-
+      
       setSuccessResponse(false);
       setReset(false);
       setTimeout(() => {
@@ -172,6 +190,8 @@ const Login = () => {
   };
 
   return (
+    !isNewPassword ? 
+    
     <div className="mainContainer">
       <div className="header">
         <p className="RouteLink">
@@ -302,8 +322,162 @@ const Login = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
+      :
+      <ResetPassword ></ResetPassword>
+    
   );
 };
 
 export default Login;
+
+const ResetPassword = () => {
+  
+  
+  const [isLoading, setLoading] = useState(false);
+  const [isReset, setReset] = useState(false);
+  const [ErrMsg, setErrMsg] = useState(false);
+  const [SuccessResponse, setSuccessResponse] = useState(false);
+  const [handleValidationMessage, setHandleValidationMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordTyped, setIsPasswordTyped] = useState(false);
+  const [NewPasswordRequest, setNewPasswordRequest] = useState({
+    NewPassword: "",
+    confirmPassword: "",
+  });
+  const handleChange = (e) => {
+    setNewPasswordRequest({
+      ...NewPasswordRequest,
+      [e.target.name]: e.target.value,
+    });
+    setIsPasswordTyped(true);
+  };
+  const handleNewPassword = async (e) => {
+    const user = JSON.parse(sessionStorage.getItem("UserOTP_Token"))
+    const validation = handleValidations();
+    e.preventDefault();
+    if (!validation) {
+      try {
+        const result = await axios.patch(
+          ResetPasswordRoute,
+          NewPasswordRequest, {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              "Content-Type": "application/json"
+            }
+          }
+        );
+        if (result.status === 200) {
+          setSuccessResponse(false);
+          setLoading(true);
+          setErrMsg(false);
+          setTimeout(() => {
+            setSuccessResponse(true);
+            setHandleValidationMessage(result.data.message);
+            setLoading(false);
+            sessionStorage.removeItem("UserOTP_Token");
+            setTimeout(() => {
+              setHandleValidationMessage("Redirecting Please wait...");
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }, 1000);
+          }, 2000);
+        }
+      } catch (error) {
+        setErrMsg(false);
+        setLoading(true);
+        setSuccessResponse(false);
+        setReset(false);
+        setTimeout(() => {
+          setErrMsg(true);
+          setReset(false);
+          setHandleValidationMessage("Password update failed Please try again");
+          setLoading(false);
+        }, 2000);
+      }
+    }
+  };
+  const handleValidations = (e) => {
+    const { NewPassword, confirmPassword } = NewPasswordRequest;
+    if (NewPassword !== confirmPassword) {
+      setErrMsg(true);
+      setHandleValidationMessage("Passwords do not match");
+      return true;
+    } else if(NewPassword.length < 8 && confirmPassword.length < 8) {
+      setErrMsg(true);
+      setHandleValidationMessage("Password must be at least 8 characters");
+      return true;
+    } else {
+      setErrMsg(false);
+      return false;
+    }
+  };
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevValue) => !prevValue);
+  };
+  return (
+    <div className="mainContainer">
+      <div className="registerContainer">
+        <div className="container">
+          <h1 className="LogoText">Nexus</h1>
+
+          <form action="" className="form" onSubmit={handleNewPassword}>
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="New password"
+                name="NewPassword"
+                required
+                onChange={handleChange}
+              />
+              <span
+                className="passwordShow"
+                onClick={handleTogglePasswordVisibility}
+              >
+                {isPasswordTyped && (showPassword ? <FaEyeSlash /> : <FaEye />)}
+              </span>
+            </div>
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Confirm password"
+                name="confirmPassword"
+                required
+                onChange={handleChange}
+              />
+            </div>
+
+            <button type="submit">
+              {isLoading ? (
+                <div className="loader">
+                  <Oval
+                    visible={true}
+                    height="35"
+                    width="30"
+                    color="#fff"
+                    ariaLabel="triangle-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              ) : (
+                "Set Password"
+              )}
+            </button>
+          </form>
+
+          {ErrMsg && <p className="ErrMsg">{handleValidationMessage}</p>}
+          {SuccessResponse && (
+            <p className="SuccessMsg">{handleValidationMessage}</p>
+          )}
+        </div>
+      </div>
+      <ToastContainer />
+    </div>
+  );
+};
+
+export {ResetPassword};
+
