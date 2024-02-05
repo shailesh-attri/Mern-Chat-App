@@ -9,7 +9,7 @@ const App = () => {
     <BrowserRouter>
       <EmailContextProvider>
         <Routes>
-          <Route path="/chats" element={<Chat></Chat>}></Route>
+          <Route path="/chats/*" element={<Chat></Chat>}></Route>
           <Route path="/" element={<Login></Login>}></Route>
           <Route path="/register" element={<Register></Register>}></Route>
         </Routes>

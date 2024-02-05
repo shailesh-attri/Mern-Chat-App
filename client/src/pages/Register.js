@@ -128,7 +128,7 @@ const Register = () => {
               setRegistered(false)
               
               setSuccessMsg(true)
-              navigate('/chats')
+              navigate(`/chats/user/${response.data.id}`)
             }, 1000);
           }, 2000);
        

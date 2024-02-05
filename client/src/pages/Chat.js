@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Chat.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
 import user from "../assets/user.jpg";
 import { MdLogout } from "react-icons/md";
 import { IoIosSearch } from "react-icons/io";
@@ -27,6 +27,8 @@ const Chat = () => {
   const userResponse = JSON.parse(localStorage.getItem("userData"));
   const userId = userResponse?.id || "";
   const getUser = `${getUserRoute}/${userId}`;
+  
+  
   useEffect(() => {
     // Check if userResponse exists in localStorage
     if (!userId) {

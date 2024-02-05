@@ -145,8 +145,8 @@ const Login = () => {
         JSON.stringify(res.data)
       );
       if (res.status === 200) {
-        console.log("userData", res);
-        const userOTPData = res.data
+        
+        const userOTPData = res.data.id
         
         
         setSuccessResponse(false);
@@ -160,7 +160,7 @@ const Login = () => {
             setHandleValidationMessage("Redirecting Please wait...");
             toast.success("Logged in successfully")
             setTimeout(() => {
-              navigate("/chats");
+              navigate(`/chats/user/${userOTPData}`);
             }, 1000);
           }, 1000);
         }, 2000);
