@@ -3,7 +3,6 @@ import { user } from "../Models/user.model.js";
 import HttpError from "../Models/error.model.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import twilio from "twilio";
 import generateTokenAndSetCookie from "../utils/generateTokenandSetCookie.js";
 import JwtForRegistration from "../utils/NewRegisterJwt.js";
 const otpMap = new Map();
@@ -50,7 +49,7 @@ const userAuthController = {
         };
         await transporter.sendMail(mailOptions);
         otpMap.set(newEmail, otp);
-        c
+        
         const token = JwtForRegistration(otp);
         res.status(200).json({
           message: "Email verification OTP successfully sent.",
@@ -120,9 +119,9 @@ const userAuthController = {
         // JWT token generation
         const time = "15d";
         const token = generateTokenAndSetCookie(id, time);
-
+        
         return res.status(200).json({
-          message: "Credentials matched",
+          message: "Login successful",
           token,
           id,
         });

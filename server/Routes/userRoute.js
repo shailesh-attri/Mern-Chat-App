@@ -7,7 +7,7 @@ import JwtAuthMiddleware from '../middleware/jwt.auth.middleware.js'
 // User Route ---------------------
 
 // Get requests
-router.get('/getAllUsers', UserController.getAllUsers)
+router.post('/getAllUsers', UserController.getAllUsers)
 router.get('/getProfile',JwtAuthMiddleware, UserController.getProfile)
 
 // Put requests
