@@ -13,7 +13,9 @@ import {
 } from "../utils/APIRoutes";
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
+  import { AuthContext } from "../utils/AuthContext";
 const Login = () => {
+ const {setAuthUser} = useContext(AuthContext)
   const [isNewPassword, setIsNewPassword] = useState(false)
   const [isLoading, setLoading] = useState(false);
   const [isReset, setReset] = useState(false);
@@ -144,9 +146,11 @@ const Login = () => {
       localStorage.setItem("userData",
         JSON.stringify(res.data)
       );
+      
       if (res.status === 200) {
         
         const userOTPData = res.data.id
+        setAuthUser(res.data)
         
         
         setSuccessResponse(false);

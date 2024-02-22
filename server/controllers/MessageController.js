@@ -2,8 +2,9 @@ import { Messages } from "../Models/Message.model.js";
 import { ChatModel } from "../Models/chat.model.js";
 import { getReceiverSocketId,io } from "../socket/socket.io.js";
 import cloudinary from "../utils/cloudinary.js";
-import { Readable } from 'stream';
+import { blockedUser } from "../Models/blockedUser.model.js";
 import fs from 'fs';
+import { log } from "console";
 const MessageController = {
   sendMessage: async (req, res) => {
     try {
@@ -14,7 +15,14 @@ const MessageController = {
       if (!receiverId || !senderId) {
         return res.status(400).json({ error: "Receiver or Sender ID is required" });
       }
-  
+      
+      const isSenderBlocked = await blockedUser.findOne({ Sender: senderId, BlockedUser: receiverId });
+      const isReceiverBlocked = await blockedUser.findOne({ Sender: receiverId, BlockedUser: senderId });
+
+      if (isSenderBlocked || isReceiverBlocked) {
+          console.log("Blocked user found");
+          return res.status(200).json({ message: "Message cannot be sent as user is blocked" });
+      }
       
     let imageUrl;
 
@@ -57,7 +65,7 @@ const MessageController = {
       chatEntry.messages.push(newMessage._id);
   
       await Promise.all([chatEntry.save(), newMessage.save()]);
-      console.log("Chat entry saved & new message saved");
+      
   
       // SOCKET IO FUNCTIONALITY WILL GO HERE
       const receiverSocketId = getReceiverSocketId(receiverId);

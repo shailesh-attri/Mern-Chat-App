@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.scss";
 import { FaEye } from "react-icons/fa";
@@ -6,7 +6,9 @@ import { FaEyeSlash } from "react-icons/fa";
 import { registerRoute,registrationVerifyRoute } from "../utils/APIRoutes.js";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
+import { AuthContext } from "../utils/AuthContext.js";
 const Register = () => {
+  const {setAuthUser} = useContext(AuthContext)
   const [isRegistered, setRegistered] = useState(true);
   const [SuccessResponse, setSuccessResponse] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -112,7 +114,7 @@ const Register = () => {
         JSON.stringify(response.data)
       );
         setSuccessResponse(false);
-
+        setAuthUser(response.data)
         setErrMsg(false);
         
         

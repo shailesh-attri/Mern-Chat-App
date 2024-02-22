@@ -19,3 +19,16 @@ export const findUserRoute = `${host}/${UserAPI}/findUser`;
 export const getProfileRoute = `${host}/${UserAPI}/getProfile`;
 export const unFollowUserRoute = `${host}/${UserAPI}/:id/unFollow`;
 export const changeAvatarRoute = `${host}/${UserAPI}/change_avatar`
+
+
+// Message routes
+const MessageAPI = 'api/user/message'
+export const sendMessageRoute = `${host}/${MessageAPI}/sendMessage`
+export const fileUploadRoute = `${host}/${MessageAPI}/uploadImage`
+
+// Chat routes
+const ChatAPI = 'api/user/chat'
+export const accessChatRoute = `${host}/${ChatAPI}/accessChat`
+export const fetchChatRoute = `${host}/${ChatAPI}/`
+export const blockedChatRoute = `${host}/${ChatAPI}/blockedUsers`
+export const UnBlockedUsersChatRoute = `${host}/${ChatAPI}/UnBlockedUsers`

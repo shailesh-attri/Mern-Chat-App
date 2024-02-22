@@ -64,18 +64,37 @@ const ChatController = {
         }
     },
     BlockedUsers:async(req, res)=>{
-        const {sender, blockedUser} = req.body
+        const {sender, blockedUserId} = req.body
         try {
-            const ExistsUsers = await blockedUser.findOne({Sender:sender, BlockedUser:blockedUser})
+            console.log(sender, blockedUserId);
+            const ExistsUsers = await blockedUser.findOne({Sender:sender, BlockedUser:blockedUserId})
             if(ExistsUsers){
-                return res.status(200).json(`User ${blockedUser} already blocked`)
+                return res.status(200).json(`User already blocked`)
             }
             const block = new blockedUser({
                 Sender:sender,
-                BlockedUser:blockedUser
+                BlockedUser:blockedUserId
             })
             await block.save()
             return res.status(200).json({message:"Blocked successfully"})
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({message:"Internal server error "})
+        }
+    },
+    UnBlockedUsers:async(req, res)=>{
+        const {sender, blockedUserId} = req.body
+        try {
+            console.log(sender, blockedUserId);
+            const ExistsUsers = await blockedUser.findOne({Sender:sender, BlockedUser:blockedUserId})
+            if (!ExistsUsers) {
+                return res.status(200).json({ message: `User is not blocked` });
+            }
+            
+            // Delete the entry
+            await blockedUser.deleteOne({ Sender: sender, BlockedUser: blockedUserId });
+    
+            return res.status(200).json({ message: "Unblocked successfully" });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({message:"Internal server error "})

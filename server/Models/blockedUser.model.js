@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const BlockUserSchema = new mongoose.Schema({
     Sender: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref:'user',
       },
       BlockedUser: {
         type: mongoose.Schema.Types.ObjectId,
