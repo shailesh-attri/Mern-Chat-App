@@ -13,12 +13,14 @@ import useListenMessage from "../hooks/useListenMessage";
 import { AuthContext } from "../utils/AuthContext";
 import { RxCross1 } from "react-icons/rx";
 import formattedTime from "../utils/formatTime";
+import { selectedUserContext } from "../utils/selectedUserContext";
 
-const Conversation = () => {
+const Conversation = ({sendDataToParent}) => {
     // Context providers
     useListenMessage();
     const {formatTime} = formattedTime()
     const { authUser } = useContext(AuthContext);
+    const {sendUserData,sendChatData} = useContext(selectedUserContext)
     const { selectedConversation, setSelectedConversation } = useConversation();
     const { onlineUsers } = useSocketContext();
     const chatBoxRef = useRef(null);
@@ -100,17 +102,26 @@ const Conversation = () => {
           chatBox.scrollTop = chatBox.scrollHeight;
         }
       }, [sendMessage, ChatMessages]);
+      const sendDataToContext = ()=>{
+        sendUserData(selectedConversation?._id)
+      }
+      const handleVisibilityData = (data)=>{
+        sendDataToParent(data)
+      }
   return (
     <>
         {selectedConversation ? (
         <div className="mainChat">
           <div className="User">
-            <div className="userHeader">
+            <div className="userHeader" onClick={()=>{
+                  sendDataToContext()
+                  handleVisibilityData(false)
+                  }}>
               <div className="profileImg">
                 <img src={userImg} alt="" />
               </div>
               <div className="status">
-                <span className="userName">
+                <span className="userName" >
                   {selectedConversation.fullName}
                 </span>
                 <div className="onlineStatus">

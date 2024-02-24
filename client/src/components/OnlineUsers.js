@@ -1,37 +1,11 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
-
-import { useNavigate } from "react-router-dom";
+import React, { useEffect} from "react";
 import userImg from "../assets/user.jpg";
-import { MdLogout } from "react-icons/md";
-import { IoIosSearch } from "react-icons/io";
-import { IoAttachSharp } from "react-icons/io5";
-import { VscSend } from "react-icons/vsc";
-import EmojiPicker from "emoji-picker-react";
-import {
-  findUserRoute,
-  getUserRoute,
-  getProfileRoute,
-  sendMessageRoute,
-  fetchChatRoute,
-  accessChatRoute,
-  getMessageRoute,
-} from "../utils/APIRoutes";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { RxCross2 } from "react-icons/rx";
-import io from "socket.io-client";
 import useGetConversation from "../hooks/useGetConversation";
-import { Oval } from "react-loader-spinner";
 import useConversation from "../zustand/useConversation";
-import useSendMessage from "../hooks/useSendMessage";
-import useGetMessages from "../hooks/useGetMessages";
 import { useSocketContext } from "../utils/SocketContex";
-import useListenMessage from "../hooks/useListenMessage";
-import { AuthContext } from "../utils/AuthContext";
 const OnlineUsers = () => {
     // All context providers
-    const { authUser } = useContext(AuthContext);
     const { onlineUsers } = useSocketContext();
     const { AllDBUsers } = useGetConversation();
     const { selectedConversation, setSelectedConversation } = useConversation();

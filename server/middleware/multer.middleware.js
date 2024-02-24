@@ -9,3 +9,14 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage: storage});
 export default upload
+const logFileUpload = (req, res, next) => {
+    // Check if file is present in the request
+    if (req.file) {
+        console.log("File received:", req.file);
+    } else {
+        console.log("No file received");
+    }
+    next(); // Call the next middleware function
+};
+
+export { logFileUpload };

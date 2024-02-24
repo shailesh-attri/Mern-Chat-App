@@ -1,0 +1,232 @@
+.mainProfile {
+  position: relative;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  width: 60%;
+
+  .Header {
+    border-bottom: 1px solid rgb(200, 199, 199);
+    padding: 0 1rem;
+    height: 70px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    width: 100%;
+  
+    .option {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      height: 70px;
+      position: relative;
+  
+      &:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background-color: blue;
+        transition: width 0.3s ease; /* Transition width for the sliding effect */
+      }
+  
+      &:hover:after {
+        width: 100%; /* Expand width to create the sliding effect */
+      }
+    }
+  
+    .selected:after {
+      width: 100%; /* Ensure the selected option has the full width */
+    }
+  }
+  
+  .mainInputs {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: end;
+    width: 100%;
+    position: relative;
+
+    .profileImage {
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      gap: 50px;
+      .dpImage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 200px;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 20px;
+          border: 2px solid gray;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+      }
+      .upload {
+        cursor: pointer !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 50px;
+        width: 100%;
+        .uploadImg{
+            padding: 10px 15px;
+                border-radius: 5px;
+                background-color: transparent;
+                border: 1px solid rgb(185, 184, 184);
+                cursor: pointer;
+                transition: box-shadow 0.3s ease;
+                &:hover{
+                    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                }
+        }
+        .updateImg{
+            button{
+                text-align: center;
+                width: 100%;
+                padding: 10px 15px;
+                border-radius: 5px;
+                background-color: transparent;
+                border: 1px solid rgb(185, 184, 184);
+                cursor: pointer;
+                transition: box-shadow 0.3s ease;
+                &:hover{
+                    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                }
+            }
+        }
+      }
+      .success{
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        font-size: 15px;
+        bottom: 0;
+        color: rgb(21, 187, 21);
+      }
+      
+    }
+    
+  }
+}
+.editBox {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 450px);
+    form {
+      width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      input {
+        padding: 0 10px;
+        height: 50px;
+        width: 500px;
+        border-radius: 10px;
+        border: 1px solid rgb(200, 199, 199);
+        outline: none;
+      }
+      button {
+        cursor: pointer;
+        display: inline-block;
+        width: 150px;
+        height: 50px;
+        border-radius: 10px;
+        border: 1px solid #03045e;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease-in;
+        z-index: 1;
+
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          width: 0;
+          height: 100%;
+          transform: skew(15deg);
+          transition: all 0.5s;
+          overflow: hidden;
+          z-index: -1;
+        }
+
+        &::before {
+          left: -10px;
+          background: #240046;
+        }
+
+        &::after {
+          right: -10px;
+          background: #5a189a;
+        }
+
+        &:hover::before,
+        &:hover::after {
+          width: 58%;
+        }
+
+        span {
+          color: #03045e;
+          font-size: 18px;
+          transition: all 0.3s ease-in;
+        }
+
+        &:hover span {
+          color: #e0aaff;
+          transition: 0.3s;
+        }
+        
+      }
+      .failed{
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+        bottom: 0;
+        color: rgb(187, 60, 21);
+      }
+      .SuccessMsg{
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+        color: rgb(21, 187, 21);
+      }
+    }
+  }
+  .updatePassWord{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    
+  }
+  .sbtBtn{
+    width: 100%;
+    span{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+    }
+  }

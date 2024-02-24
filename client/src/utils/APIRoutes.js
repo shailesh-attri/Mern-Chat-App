@@ -13,12 +13,12 @@ export const registrationVerifyRoute = `${host}/${AuthAPI}/registration_verify`
 const UserAPI = "api/user";
 export const getUserRoute = `${host}/${UserAPI}/`;
 export const editUserRoute = `${host}/${UserAPI}/edit_profile`;
-export const deleteUserRoute = `${host}/${UserAPI}/delete_profile`;
+export const UpdatePasswordRoute = `${host}/${UserAPI}/update_password`;
 export const getAllUsersRoute = `${host}/${UserAPI}/getAllUsers`;
 export const findUserRoute = `${host}/${UserAPI}/findUser`;
-export const getProfileRoute = `${host}/${UserAPI}/getProfile`;
+export const getSelectedProfile = `${host}/${UserAPI}/getSelectedProfile`;
 export const unFollowUserRoute = `${host}/${UserAPI}/:id/unFollow`;
-export const changeAvatarRoute = `${host}/${UserAPI}/change_avatar`
+export const changeAvatarRoute = `${host}/${UserAPI}/`
 
 
 // Message routes

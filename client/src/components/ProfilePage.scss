@@ -1,0 +1,56 @@
+.mainProfile {
+  position: relative;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  width: 60%;
+
+  .Header {
+    border-bottom: 1px solid rgb(200, 199, 199);
+    padding: 0 1rem;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    .profileImage {
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      gap: 50px;
+      .dpImage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 200px;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 20px;
+          border: 2px solid gray;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+      }
+    }
+  }
+  .profileBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 1rem 2rem;
+    .container{
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: center;
+      gap: 10px;
+    }
+  }
+}

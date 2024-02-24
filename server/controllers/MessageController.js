@@ -3,8 +3,7 @@ import { ChatModel } from "../Models/chat.model.js";
 import { getReceiverSocketId,io } from "../socket/socket.io.js";
 import cloudinary from "../utils/cloudinary.js";
 import { blockedUser } from "../Models/blockedUser.model.js";
-import fs from 'fs';
-import { log } from "console";
+
 const MessageController = {
   sendMessage: async (req, res) => {
     try {

@@ -1,17 +1,57 @@
 import bcrypt from "bcrypt";
 import { user } from "../Models/user.model.js";
-import jwt from "jsonwebtoken";
-
+import cloudinary from "../utils/cloudinary.js";
+import fs from 'fs'
 const UserController = {
   // editProfile: function
-  editProfile: (req, res, next) => {
-    res.json({ message: "Edit Profile" });
+  editProfile: async(req, res, next) => {
+    const userId = req.userID
+    const {fullName, email, username, bio} = req.body
+    try {
+      const userDoc = await user.findById(userId)
+      if(!userDoc){
+        return res.status(404).json({ message: "User not found" });
+      }
+      userDoc.fullName = fullName
+      userDoc.email = email
+      userDoc.username = username
+      userDoc.bio = bio
+      await userDoc.save()
+      return res.status(200).json({ message: "User updated successfully", user: userDoc });
+      
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   },
 
   // deleteProfile: function
-  deleteProfile: (req, res, next) => {
-    res.json({ message: "Delete Profile" });
+  UpdatePassword: async (req, res, next) => {
+    const userId = req.userID;
+    const { currentPassword, newPassword } = req.body;
+    console.log(userId, currentPassword);
+    try {
+      const userDoc = await user.findById(userId);
+      if (!userDoc) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const oldPassword = await bcrypt.compare(currentPassword, userDoc.password);
+      if (!oldPassword) {
+        return res.status(404).json({ message: "Current password is wrong!!" });
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      userDoc.password = hashedPassword;
+      await userDoc.save();
+
+      return res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   },
+  
 
   // getUser: function
   getUser: async (req, res, next) => {
@@ -52,21 +92,22 @@ const UserController = {
 
   getProfile: async (req, res, next) => {
     try {
-      const userId = req.userID;
+      const {userId} = req.body;
+      console.log(userId);
 
       // Assuming you have a User model and want to fetch user details by ID
       const userProfile = await user.findById(userId);
-      console.log("userProfile", userProfile);
+      
       if (!userProfile) {
         return res.status(404).json({ message: "User not found" });
       } else {
         // Extract only necessary details for the profile response
-        const { _id, fullName, username, email } = userProfile;
+        const { _id, fullName, username, email,bio } = userProfile;
 
         return res
           .status(200)
           .json({
-            userProfile: { _id, fullName, username, email },
+             _id, fullName, username, email,bio,
             message: "Profile fetched successfully",
           });
       }
@@ -109,14 +150,54 @@ const UserController = {
     }
   },
 
-  // unFollowUser: function
-  unFollowUser: (req, res, next) => {
-    res.json({ message: "unFollowUser" });
-  },
-
   // changeAvatar: function
-  changeAvatar: (req, res, next) => {
-    res.json({ message: "changeAvatar" });
-  },
+  changeAvatar: async (req, res, next) => {
+    try {
+      const userID = req.params.userId.trim();
+      console.log(userID);
+
+      let imageUrl;
+      if (req.file) {
+        const filePath = req.file.path;
+        console.log(filePath);
+        imageUrl = await ImageFileUpload(filePath);
+        console.log(imageUrl);
+      }else{
+        console.log("Please select an image");
+      }
+
+      const userDoc = await user.findById(userID);
+      if (!userDoc) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      userDoc.avatarUrl = imageUrl;
+      await userDoc.save();
+
+      return res.status(200).json({ message: 'Avatar changed successfully'});
+    } catch (error) {
+      console.log('An error occurred:', error);
+      return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+  }
 };
 export { UserController };
+const ImageFileUpload = async (filePath) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath); // Upload file to Cloudinary
+    console.log('Uploaded to Cloudinary:', result);
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error('Error deleting file:', err);
+      } else {
+        console.log('File deleted successfully');
+      }
+    }); // Delete file synchronously
+
+    return result.secure_url; // Return the URL of the uploaded file
+  } catch (error) {
+    console.error('Error uploading to Cloudinary:', error);
+    throw error; // Throw the error for handling
+  }
+};

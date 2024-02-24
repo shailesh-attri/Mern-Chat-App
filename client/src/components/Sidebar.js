@@ -17,17 +17,19 @@ import { useSocketContext } from "../utils/SocketContex";
 import { RxCross2 } from "react-icons/rx";
 import { Oval } from "react-loader-spinner";
 import formattedTime from "../utils/formatTime";
-const Sidebar = () => {
-    const { authUser } = useContext(AuthContext);
+const Sidebar = ({sendDataToParent}) => {
+    const { authUser,avatarMessage,sendLoggedData,profileUpdate,loggedUser } = useContext(AuthContext);
     const {formatTime} = formattedTime()
+    
     // All useStates
-    const [AllUsers, setAllUsers] = useState([]);
+    const [ThisUser, setThisUser] = useState([]);
     const [user, setUser] = useState([]);
     const [SearchInput, setSearchInput] = useState("");
     const [isChats, setIsChats] = useState(true);
     const [isLoading, setLoading] = useState(true);
     const [messages, setMessages] = useState("");
     const [UserAllChat, setUserAllChat] = useState([]);
+    const [profileImage, setProfileImage] = useState(null)
     // Routes initializing
     const getUser = `${getUserRoute}/${authUser?.id}`;
     const fetchChatRouter = `${fetchChatRoute}/${authUser?.id}`;
@@ -40,8 +42,17 @@ const Sidebar = () => {
     return selectedConversation && selectedConversation._id === user._id;};
     const { onlineUsers } = useSocketContext();
     const { message: ChatMessages } = useGetMessages();
-
     // SingleUse UseEffects
+    useEffect(()=>{
+      setIsChats(true)
+    },[ChatMessages])
+    useEffect(()=>{
+      if(loggedUser && loggedUser?.avatarUrl){
+        setProfileImage(loggedUser?.avatarUrl)
+      }else{
+        setProfileImage(userImg)
+      }
+    },[avatarMessage,loggedUser,userImg])
     useEffect(() => {
         // Check if userResponse exists in localStorage
         if (!authUser?.id) {
@@ -59,8 +70,8 @@ const Sidebar = () => {
             try {
               const res = await axios.get(getUser);
               if (res.status === 200) {
-                console.log(res.data.ThisUser.fullName);
-                setAllUsers(res.data.ThisUser.fullName);
+                sendLoggedData(res.data.ThisUser);
+                setThisUser(res.data.ThisUser);
               }
             } catch (error) {
               console.log(error.message);
@@ -70,7 +81,7 @@ const Sidebar = () => {
           
         //   Calling functions
           handleFetchUser();
-      }, []);
+      }, [authUser, avatarMessage, profileUpdate]);
     
     useEffect(() => {
         fetchChat();
@@ -124,14 +135,18 @@ const Sidebar = () => {
           console.log(error.message);
         }
       };
+    const handleEditData =(data)=>{
+      sendDataToParent(data);
+    }
+    
   return (
     <div className="LeftContainer">
         <div className="UserContainer">
-          <div className="User">
+          <div className="User" onClick={()=>handleEditData(false)}>
             <div className="profileImg">
-              <img src={userImg} alt="" />
+              <img src={profileImage} alt="" />
             </div>
-            <span className="userName">{AllUsers}</span>
+            <span className="userName">{ThisUser?.fullName}</span>
           </div>
           <span className="MdLogout">
             <MdLogout onClick={Logout} />

@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     email: {
         type:String,
         required:true,
-       
+        
     },
     username: {
         type:String,
@@ -18,6 +18,12 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    avatarUrl: {
+        type:String,
+    },
+    bio:{
+        type:String,
+    }
     
     
     
