@@ -35,28 +35,28 @@ io.on("connection", (socket) => {
 	// io.emit() is used to send events to all the connected clients
 	io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-	// socket.on("blockUser", (blockedUserId) => {
-    //     const user = userSocketMap[blockedUserId];
-	// 	console.log(user);
-    //     if (user) {
-    //         user.blockedUsers.push(blockedUserId);
-    //         // Optionally, you can notify the client that the user has been blocked
-    //         io.to(user.socketId).emit("userBlocked", blockedUserId);
-    //     }
-    // });
-	// socket.on("unblockUser", (blockedUserId) => {
-	// 	const user = userSocketMap[blockedUserId];
-	// 	console.log(blockedUserId);
-	// 	console.log(user);
-	// 	if (user) {
-	// 		const index = user.blockedUsers.indexOf(blockedUserId);
-	// 		if (index !== -1) {
-	// 			user.blockedUsers.splice(index, 1);
-	// 			// Optionally, you can notify the client that the user has been unblocked
-	// 			io.to(user.socketId).emit("userUnBlocked", blockedUserId);
-	// 		}
-	// 	}
-	// });
+	socket.on("blockUser", (blockedUserId, senderId) => {
+        const user = userSocketMap[blockedUserId];
+		
+        if (user) {
+            user.blockedUsers.push(blockedUserId);
+            // Optionally, you can notify the client that the user has been blocked
+            io.to(user.socketId).emit("userBlocked", senderId);
+        }
+    });
+	socket.on("unblockUser", (blockedUserId) => {
+		const user = userSocketMap[blockedUserId];
+		
+		
+		if (user) {
+			const index = user.blockedUsers.indexOf(blockedUserId);
+			if (index !== -1) {
+				user.blockedUsers.splice(index, 1);
+				// Optionally, you can notify the client that the user has been unblocked
+				io.to(user.socketId).emit("userUnBlocked", blockedUserId);
+			}
+		}
+	});
 	// socket.on() is used to listen to the events. can be used both on client and server side
 	socket.on("disconnect", () => {
 		console.log("user disconnected", socket.id);

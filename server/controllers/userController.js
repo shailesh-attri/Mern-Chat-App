@@ -17,7 +17,7 @@ const UserController = {
       userDoc.username = username
       userDoc.bio = bio
       await userDoc.save()
-      return res.status(200).json({ message: "User updated successfully", user: userDoc });
+      return res.status(200).json({ message: "Profile updated successfully" });
       
     } catch (error) {
       console.error("Error updating user:", error);
@@ -92,7 +92,7 @@ const UserController = {
 
   getProfile: async (req, res, next) => {
     try {
-      const {userId} = req.body;
+      const userId = req.params.id;
       console.log(userId);
 
       // Assuming you have a User model and want to fetch user details by ID
@@ -102,12 +102,12 @@ const UserController = {
         return res.status(404).json({ message: "User not found" });
       } else {
         // Extract only necessary details for the profile response
-        const { _id, fullName, username, email,bio } = userProfile;
+        const { password,token,Token, ...otherDetails } = userProfile._doc;
 
         return res
           .status(200)
           .json({
-             _id, fullName, username, email,bio,
+            otherDetails,
             message: "Profile fetched successfully",
           });
       }
@@ -178,6 +178,25 @@ const UserController = {
     } catch (error) {
       console.log('An error occurred:', error);
       return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+  },
+  deleteAvatar: async(req, res)=>{
+    try {
+      const userId = req.userID
+      const {avatarURL} = req.body
+      console.log(userId);
+      const userDoc = await user.findById(userId);
+      if(!userDoc) {
+        return res.status(404).json({ message: 'User not found'})
+      }
+      userDoc.avatarUrl = ''
+      
+      userDoc.save();
+      return res.status(200).json({ message: 'Avatar deleted successfully'})
+      
+    } catch (error) {
+      console.log("An error occurred:", error);
+      return res.status(500).json({ message: 'Internal Server Error', error})
     }
   }
 };

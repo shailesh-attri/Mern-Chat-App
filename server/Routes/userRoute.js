@@ -8,7 +8,7 @@ import upload from '../utils/multer.js'
 
 // Get requests
 router.post('/getAllUsers', UserController.getAllUsers)
-router.get('/getSelectedProfile', UserController.getProfile)
+router.get('/getSelectedProfile/:id', UserController.getProfile)
 router.get('/:id', UserController.getUser)
 
 // Put requests
@@ -17,6 +17,7 @@ router.post('/findUser', UserController.findUser);
 
 // Patch requests
 router.patch('/:userId', upload.single('dpImage'), UserController.changeAvatar);
+router.delete('/deleteAvatar', JwtAuthMiddleware, UserController.deleteAvatar);
 router.post('/update_password', JwtAuthMiddleware, UserController.UpdatePassword);
 
 

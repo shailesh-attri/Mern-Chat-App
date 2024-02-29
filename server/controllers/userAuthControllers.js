@@ -31,6 +31,7 @@ const userAuthController = {
           return Math.floor(100000 + Math.random() * 900000).toString();
         }
         const otp = generateOtp();
+        console.log(otp);
         const transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
           service: "gmail",
