@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext,useState } from 'react'
 import { useSocketContext } from '../utils/SocketContex.js'
-import useConversation from '../zustand/useConversation'
 import { AuthContext } from '../utils/AuthContext.js'
 import { blockedChatRoute, UnBlockedUsersChatRoute } from '../utils/APIRoutes.js'
 import axios from 'axios'
 import { BlockedUsersContext } from '../utils/BlockedUsers.js'
 
 const useBlockUser = () => {
-    const {sendBlock,sendIsVisibleInput,sendIsBlocked} = useContext(BlockedUsersContext)
+    const {sendBlock} = useContext(BlockedUsersContext)
     const { authUser } = useContext(AuthContext);
     const { socket} = useSocketContext()
  
@@ -15,7 +14,7 @@ const useBlockUser = () => {
     const handleBlockUser = async(blockedUserId) => {
         
         // Emit an event to the server indicating that the user wants to block another user
-        socket?.emit("blockUser", blockedUserId);
+        socket?.emit("blockUser", blockedUserId, authUser?.id);
        
         // Optionally, you can also perform client-side actions, such as filtering out messages from the blocked user
         const updatedBlockedUsers = [...blockedUsers, blockedUserId];
@@ -29,9 +28,7 @@ const useBlockUser = () => {
         try {
             const res = await axios.post(blockedChatRoute, blockUser )
             if(res.status === 200){
-                console.log(res.data);
-                sendIsVisibleInput(false)
-                sendIsBlocked(true)
+                sendBlock(blockedUserId)
             }
         } catch (error) {
             console.log(error.message);
@@ -41,7 +38,7 @@ const useBlockUser = () => {
     const handleUnBlockUser = async(blockedUserId) => {
         
         // Emit an event to the server indicating that the user wants to block another user
-        socket?.emit("unblockUser", blockedUserId);
+        socket?.emit("unblockUser", blockedUserId, authUser?.id);
        
         // Optionally, you can also perform client-side actions, such as filtering out messages from the blocked user
         const updatedBlockedUsers = blockedUsers.filter((userId) => userId !== blockedUserId);
@@ -55,8 +52,7 @@ const useBlockUser = () => {
         try {
             const res = await axios.post(UnBlockedUsersChatRoute, blockUser )
             if(res.status === 200){
-                console.log(res.data);
-                sendIsVisibleInput(true)
+                return res.data
             }
         } catch (error) {
             console.log(error.message);

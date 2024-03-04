@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./Register.scss";
+import "./Login.scss";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import { Oval } from "react-loader-spinner";
@@ -9,32 +9,35 @@ import {
   loginRoute,
   EmailVerifyRoute,
   verify_otpRoute,
-  ResetPasswordRoute
-} from "../utils/APIRoutes";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-  import { AuthContext } from "../utils/AuthContext";
+  ResetPasswordRoute,
+} from "../../utils/APIRoutes";
+import LogoText from '../../assets/LogoText.png'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from "../../utils/AuthContext";
+import N_logo from '../../assets/N_logo.png';
 const Login = () => {
- const {setAuthUser} = useContext(AuthContext)
-  const [isNewPassword, setIsNewPassword] = useState(false)
-  const [isLoading, setLoading] = useState(false);
-  const [isReset, setReset] = useState(false);
-  const [ErrMsg, setErrMsg] = useState(false);
-  const [SuccessResponse, setSuccessResponse] = useState(false);
-  const [handleValidationMessage, setHandleValidationMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordTyped, setIsPasswordTyped] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [isVerified, setVerified] = useState(false);
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-  const [otp, setOtpRequest] = useState({
-    otp: "",
-  });
+  const { setAuthUser } = useContext(AuthContext);
 
-  const [emailData, setEmailData] = useState({ emailReset: "" });
+// State for login and password reset
+const [loginData, setLoginData] = useState({ email: "", password: "" });
+const [otp, setOtpRequest] = useState({ otp: "" });
+const [emailData, setEmailData] = useState({ emailReset: "" });
+
+// State for password reset form
+const [isNewPassword, setIsNewPassword] = useState(false);
+const [isLoading, setLoading] = useState(false);
+const [isReset, setReset] = useState(false);
+const [ErrMsg, setErrMsg] = useState(false);
+const [SuccessResponse, setSuccessResponse] = useState(false);
+const [handleValidationMessage, setHandleValidationMessage] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [isPasswordTyped, setIsPasswordTyped] = useState(false);
+
+// State for user authentication
+const [isLoggedIn, setIsLoggedIn] = useState(true);
+const [isVerified, setVerified] = useState(false);
+
   const handleEmail = (e) => {
     setEmailData({ [e.target.name]: e.target.value });
 
@@ -45,7 +48,7 @@ const Login = () => {
   };
   const handleEmailVerify = async (e) => {
     e.preventDefault();
-   
+
     setLoading(true);
     try {
       const response = await axios.post(EmailVerifyRoute, emailData);
@@ -54,8 +57,11 @@ const Login = () => {
 
         setErrMsg(false);
         setTimeout(() => {
-          sessionStorage.setItem("UserOTP_Token", JSON.stringify(response.data));
-         
+          sessionStorage.setItem(
+            "UserOTP_Token",
+            JSON.stringify(response.data)
+          );
+
           setHandleValidationMessage(response.data.message);
           setSuccessResponse(true);
           setLoading(false);
@@ -105,7 +111,7 @@ const Login = () => {
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
             setTimeout(() => {
-              setIsNewPassword(true)
+              setIsNewPassword(true);
             }, 1000);
           }, 1000);
         }, 3000);
@@ -143,16 +149,12 @@ const Login = () => {
     try {
       const res = await axios.post(loginRoute, loginData);
       // Using localStorage
-      localStorage.setItem("userData",
-        JSON.stringify(res.data)
-      );
-      
+      localStorage.setItem("userData", JSON.stringify(res.data));
+
       if (res.status === 200) {
-        
-        const userOTPData = res.data.id
-        setAuthUser(res.data)
-        
-        
+        const userOTPData = res.data.id;
+        setAuthUser(res.data);
+
         setSuccessResponse(false);
 
         setErrMsg(false);
@@ -162,7 +164,7 @@ const Login = () => {
           setLoading(false);
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
-            toast.success("Logged in successfully")
+            toast.success("Logged in successfully");
             setTimeout(() => {
               navigate(`/chats/user/${userOTPData}`);
             }, 1000);
@@ -172,7 +174,7 @@ const Login = () => {
     } catch (error) {
       // Other server errors
       setErrMsg(false);
-      
+
       setSuccessResponse(false);
       setReset(false);
       setTimeout(() => {
@@ -193,35 +195,35 @@ const Login = () => {
     setVerified(true);
   };
 
-  return (
-    !isNewPassword ? 
-    
+  return !isNewPassword ? (
     <div className="mainContainer">
-      <div className="header">
-        <p className="RouteLink">
-          New here? <Link to="/register">Register</Link>
-        </p>
-      </div>
+      <div className="header"></div>
 
       <div className="registerContainer">
         <div className="container">
-          <h1 className="LogoText">Nexus</h1>
           {isLoggedIn ? (
             <form action="" className="form" onSubmit={handleLogin}>
+            <div className="logo">
+              <img src={N_logo} alt="" />
+              <span className="LogoText">Nexus</span>
+            </div>
               <input
                 type="email"
                 placeholder="Email"
                 name="email"
                 required
+                autoComplete="off"
+                value={loginData.email}
                 onChange={handleChange}
               />
               <div className="password-container">
                 <input
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
+                  autoComplete="off"
                   placeholder="Password"
                   name="password"
                   required
+                  value={loginData.password}
                   onChange={handleChange}
                 />
                 <span
@@ -229,7 +231,7 @@ const Login = () => {
                   onClick={handleTogglePasswordVisibility}
                 >
                   {isPasswordTyped &&
-                    (showPassword ? <FaEyeSlash /> : <FaEye />)}
+                    (showPassword ? <FaEyeSlash color="gray" /> : <FaEye color="gray"/>)}
                 </span>
               </div>
 
@@ -246,10 +248,13 @@ const Login = () => {
                       wrapperClass=""
                     />
                   </div>
-                ) : (
+                ) : ( 
                   "Login"
                 )}
               </button>
+              <p className="RouteLink">
+                Don't have an account ? <Link to="/register" className="Link"><span>Register</span></Link>
+              </p>
             </form>
           ) : (
             <>
@@ -310,6 +315,9 @@ const Login = () => {
                       "Verify"
                     )}
                   </button>
+                  <p className="spams">
+                    Check in your Spams. Don't worry it is safe
+                  </p>
                 </form>
               )}
             </>
@@ -328,17 +336,14 @@ const Login = () => {
       </div>
       <ToastContainer />
     </div>
-      :
-      <ResetPassword ></ResetPassword>
-    
+  ) : (
+    <ResetPassword></ResetPassword>
   );
 };
 
 export default Login;
 
 const ResetPassword = () => {
-  
-  
   const [isLoading, setLoading] = useState(false);
   const [isReset, setReset] = useState(false);
   const [ErrMsg, setErrMsg] = useState(false);
@@ -358,18 +363,19 @@ const ResetPassword = () => {
     setIsPasswordTyped(true);
   };
   const handleNewPassword = async (e) => {
-    const user = JSON.parse(sessionStorage.getItem("UserOTP_Token"))
+    const user = JSON.parse(sessionStorage.getItem("UserOTP_Token"));
     const validation = handleValidations();
     e.preventDefault();
     if (!validation) {
       try {
         const result = await axios.patch(
           ResetPasswordRoute,
-          NewPasswordRequest, {
+          NewPasswordRequest,
+          {
             headers: {
               Authorization: `Bearer ${user.token}`,
-              "Content-Type": "application/json"
-            }
+              "Content-Type": "application/json",
+            },
           }
         );
         if (result.status === 200) {
@@ -409,7 +415,7 @@ const ResetPassword = () => {
       setErrMsg(true);
       setHandleValidationMessage("Passwords do not match");
       return true;
-    } else if(NewPassword.length < 8 && confirmPassword.length < 8) {
+    } else if (NewPassword.length < 8 && confirmPassword.length < 8) {
       setErrMsg(true);
       setHandleValidationMessage("Password must be at least 8 characters");
       return true;
@@ -440,7 +446,7 @@ const ResetPassword = () => {
                 className="passwordShow"
                 onClick={handleTogglePasswordVisibility}
               >
-                {isPasswordTyped && (showPassword ? <FaEyeSlash /> : <FaEye />)}
+                {isPasswordTyped && (showPassword ? <FaEyeSlash color="gray"/> : <FaEye color="gray"/>)}
               </span>
             </div>
             <div className="password-container">
@@ -483,5 +489,4 @@ const ResetPassword = () => {
   );
 };
 
-export {ResetPassword};
-
+export { ResetPassword };

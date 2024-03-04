@@ -2,7 +2,7 @@ import React from 'react'
 
 const formattedTime = () => {
     const formatTime = (ThisMessage) => {
-        const dateTimeString = ThisMessage.createdAt || ThisMessage;
+        const dateTimeString = ThisMessage?.createdAt || ThisMessage;
         const dateTime = new Date(dateTimeString);
       
         // Get hours, minutes, and AM/PM

@@ -1,12 +1,12 @@
 import React, { useContext, useState,useEffect } from "react";
 import "./UpdateProfile.scss";
 import { FaCameraRetro } from "react-icons/fa";
-import defaultImage from "../assets/defaultImage.png";
-import { changeAvatarRoute } from "../utils/APIRoutes";
+import defaultImage from "../../assets/defaultImage.png";
+import { changeAvatarRoute,deleteAvatarRoute } from "../../utils/APIRoutes";
 import axios from "axios";
-import { AuthContext } from "../utils/AuthContext";
+import { AuthContext } from "../../utils/AuthContext";
 import { TailSpin } from "react-loader-spinner";
-import { editUserRoute,UpdatePasswordRoute } from "../utils/APIRoutes";
+import { editUserRoute,UpdatePasswordRoute } from "../../utils/APIRoutes";
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 const UpdateProfile = () => {
@@ -67,9 +67,13 @@ const UpdateProfileComponent = ({
   sendUpdateProfileData
 }) => {
   const [isLoading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(true);
+  const [isUpdating, setUpdating] = useState(false);
+  const [isDeleted, setDeleted] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(true);
   const [showImage, setShowImage] = useState(null);
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [fileName, setFileName] = useState('');
   const [formData, setFormData] = useState({})
   useEffect(() => {
     setFormData({
@@ -90,6 +94,17 @@ const UpdateProfileComponent = ({
     const file = e.target.files[0];
     const reader = new FileReader();
     setImage(file);
+    const fileName = file?.name;
+    const fileExtension = fileName.split('.').pop(); // Get the file extension
+    const fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.'); // Get the file name without extension
+    
+    // Get the first three characters of the file name (or less if the file name is shorter)
+    const shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length, 5));
+    
+    // Combine the first three characters, an ellipsis, and the file extension
+    const displayedFileName = `${shortenedFileName}${fileNameWithoutExtension.length > 3 ? '...' : ''}.${fileExtension}`;
+    
+    setFileName(displayedFileName);
     reader.onloadend = () => {
       // Set the image state with the uploaded image
       setShowImage(reader.result);
@@ -100,7 +115,11 @@ const UpdateProfileComponent = ({
     }
   };
   const handleUploadImage = async () => {
+    setUpdating(true)
     setLoading(true)
+    if(!image){
+      alert("Please select an image")
+    }
     try {
       const res = await axios.patch(
         `${changeAvatarRoute}/${userId}`,
@@ -112,14 +131,32 @@ const UpdateProfileComponent = ({
         }
       );
       if (res.status === 200) {
+        setUpdating(false)
         setLoading(false)
-        setSuccess(res.data);
-        sendAvatarData(res.data.message)
+        setSuccessMessage(res.data);
+        sendAvatarData(res.data)
       }
     } catch (error) {
       console.log("Upload failed", error.message);
     }
   };
+  const handleDeleteImage = async () => {
+    setDeleted(true)
+    try {
+      const result = await axios.delete(deleteAvatarRoute, {
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
+      if(result.status === 200) {
+        setDeleted(false)
+        setSuccessMessage(result.data);
+        sendAvatarData(result.data)
+      }
+    } catch (error) {
+      console.log("Delete failed", error.message);
+    }
+  }
 const handleFormInput = (e)=>{
   setFormData({
     ...formData,
@@ -127,6 +164,7 @@ const handleFormInput = (e)=>{
   })
 }
   const handleUpdateProfile = async(e)=>{
+    setLoading(true)
     e.preventDefault();
     try {
       const res = await axios.put(editUserRoute, formData, {
@@ -135,32 +173,65 @@ const handleFormInput = (e)=>{
         }
       })
       if(res.status === 200){
-        console.log(res.data);
+        
+        setLoading(false)
+        setSuccessMessage(res.data);
         sendUpdateProfileData(res.data)
       }
     } catch (error) {
       console.log("Error in updating profile", error);
     }
   }
-  const successMsg = !isLoading && success
+  
+  const successUpdating = !isLoading && successMessage
+  useEffect(() => {
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 4000);
+  },[successMessage,!isLoading,])
+  useEffect(()=>{
+    const imageURL = loggedUser && loggedUser?.avatarUrl || defaultImage
+    setImageUrl(imageURL)
+  },[loggedUser,defaultImage,successMessage])
   return (
     <div className="mainInputs">
       <div className="profileImage">
         <div className="dpImage">
-          <img src={showImage} />
+        {isLoading ? 
+        <div className="Loader">
+
+        <TailSpin 
+              height="30"
+              width="40"/>
+        </div>
+              :
+          <img src={imageUrl} />
+              }
         </div>
         <label htmlFor="fileInput">
           <span className="upload">
             <span className="uploadImg">
-              <FaCameraRetro /> Upload
+            {fileName ?  <span className="fileName">{fileName}</span>
+            :
+            <span><FaCameraRetro/> Upload</span> 
+            }
+              
             </span>
             <span className="updateImg" onClick={handleUploadImage}>
               <button>
-              {isLoading ? 
+              {isUpdating ? 
               <TailSpin 
               height="30"
               width="40"/>
               : "Set Picture"}</button>
+            </span>
+            <span className="updateImg" onClick={handleDeleteImage}>
+              <button>
+              {isDeleted ? 
+              <TailSpin 
+              height="30"
+              width="40"/>
+              : "Delete Picture"}</button>
             </span>
           </span>
           <input
@@ -172,7 +243,7 @@ const handleFormInput = (e)=>{
             onChange={handleFileInputChange}
           />
         </label>
-        {successMsg && <p className="success">{success.message}</p>}
+        
         
       </div>
       <div className="editBox">
@@ -200,7 +271,7 @@ const handleFormInput = (e)=>{
             placeholder="Email" 
             onChange={handleFormInput}
             readOnly="true"
-            style={{backgroundColor: '#E5E5E5'}}
+            style={{backgroundColor: '#070707'}}
             onClick={()=>alert("Email can't be changed")}
             />
           <input
@@ -212,6 +283,7 @@ const handleFormInput = (e)=>{
           <button type="submit">
             <span> Update</span>
           </button>
+          {successUpdating && <p className="successTrue">{successMessage.message}</p>}
         </form>
       </div>
     </div>

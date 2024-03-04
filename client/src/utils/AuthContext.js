@@ -12,7 +12,9 @@ export const AuthContextProvider = ({children})=>{
     }
     const sendAvatarData = (data)=>{
         setAvatarUrl(data)
+        
     }
+    
     const sendUpdateProfileData = (data)=>{
         setProfileUpdate(data)
     }

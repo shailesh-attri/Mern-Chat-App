@@ -3,20 +3,21 @@ export const BlockedUsersContext = createContext()
 
 export const BlockedUsersContextsProvider = ({children})=>{
     const [BlockedUsers, setBlockedUsers] = useState('')
-    const [isVisibleInput, setVisibleInput] = useState(null)
     const [isBlocking, setIsBlocking] = useState(null)
+    const [isSender, setSenderId] = useState(null)
     const sendBlock = (data)=>{
         setBlockedUsers(data)
     }
-    const sendIsVisibleInput = (data)=>{
-        setVisibleInput(data)
-        
-    }
-    const sendIsBlocked = (data)=>{
+    
+    const sendBlockedUsers = (data)=>{
         setIsBlocking(data)
     }
+    const sendSenderId  = (data)=>{
+        setSenderId(data)
+    }
+    console.log("isSender",isSender);
     return (
-        <BlockedUsersContext.Provider value={{sendIsBlocked,BlockedUsers,sendBlock,sendIsVisibleInput,isVisibleInput,isBlocking}}>
+        <BlockedUsersContext.Provider value={{sendBlockedUsers,BlockedUsers,sendBlock,isBlocking,sendSenderId,isSender}}>
         {children}
         </BlockedUsersContext.Provider>
     )

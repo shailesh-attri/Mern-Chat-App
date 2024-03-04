@@ -19,6 +19,7 @@ export const findUserRoute = `${host}/${UserAPI}/findUser`;
 export const getSelectedProfile = `${host}/${UserAPI}/getSelectedProfile`;
 export const unFollowUserRoute = `${host}/${UserAPI}/:id/unFollow`;
 export const changeAvatarRoute = `${host}/${UserAPI}/`
+export const deleteAvatarRoute = `${host}/${UserAPI}/deleteAvatar`
 
 
 // Message routes
@@ -32,3 +33,5 @@ export const accessChatRoute = `${host}/${ChatAPI}/accessChat`
 export const fetchChatRoute = `${host}/${ChatAPI}/`
 export const blockedChatRoute = `${host}/${ChatAPI}/blockedUsers`
 export const UnBlockedUsersChatRoute = `${host}/${ChatAPI}/UnBlockedUsers`
+export const AllBlockedRoute = `${host}/${ChatAPI}/AllBlocked/`
+export const groupChatRoutes = `${host}/${ChatAPI}/groupChat`

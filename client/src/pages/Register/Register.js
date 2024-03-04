@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Register.scss";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { registerRoute,registrationVerifyRoute } from "../utils/APIRoutes.js";
+import { registerRoute,registrationVerifyRoute } from "../../utils/APIRoutes.js";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
-import { AuthContext } from "../utils/AuthContext.js";
+import { AuthContext } from "../../utils/AuthContext.js";
+import N_logo from '../../assets/N_logo.png';
 const Register = () => {
   const {setAuthUser} = useContext(AuthContext)
   const [isRegistered, setRegistered] = useState(true);
@@ -55,6 +56,9 @@ const Register = () => {
     setLoading(true);
     e.preventDefault();
     const validateError = handleValidations();
+    if(validateError) {
+      setLoading(false);
+    }
 
     if (!validateError) {
       try {
@@ -79,6 +83,7 @@ const Register = () => {
           }, 1000);
         
         }
+        setLoading(false);
        
       } catch (error) {
         console.error(error.response);
@@ -169,20 +174,19 @@ const Register = () => {
   };
   return (
     <div className="mainContainer">
-      <div className="header">
-        <p>
-          Already have an account? <Link to="/">Login</Link>
-        </p>
-      </div>
+      
       {isRegistered && 
         <div className="registerContainer">
           <div className="container">
-            <h1 className="LogoText">Nexus</h1>
             <form
               enctype="multipart/form-data"
               className="form"
               onSubmit={handleRegister}
             >
+           <div className="logo">
+              <img src={N_logo} alt="" />
+              <span className="LogoText">Nexus</span>
+            </div>
               <input
                 type="text"
                 placeholder="Full name"
@@ -219,7 +223,7 @@ const Register = () => {
                   onClick={handleTogglePasswordVisibility}
                 >
                   {isPasswordTyped &&
-                    (showPassword ? <FaEyeSlash /> : <FaEye />)}
+                    (showPassword ? <FaEyeSlash color="gray"/> : <FaEye color="gray"/>)}
                 </span>
               </div>
               <div className="password-container">
@@ -250,6 +254,9 @@ const Register = () => {
                   "Register"
                 )}
               </button>
+              <p className="RouteLink">
+                Already have an account ? <Link to="/" className="Link"><span>Login</span></Link>
+              </p>
             </form>
             {SuccessResponse && (
             <p className="SuccessMsg">{handleValidationMessage}</p>
@@ -289,6 +296,7 @@ const Register = () => {
                       "Verify"
                     )}
                   </button>
+                  <p className="spams">Check in your Spams. Don't worry it is safe</p>
                 </form>
       
       </div>

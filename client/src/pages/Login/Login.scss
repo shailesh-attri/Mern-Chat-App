@@ -1,51 +1,73 @@
+@import '../../utils/cssConfigMixin.scss';
+
 .mainContainer {
-   
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
+  background: url("../../assets/bg2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: calc(100vh - 100px);
+  padding: 0;
+  margin: 0;
+  width: 100%;
   .header {
     width: 100%;
     text-align: end;
-   
-    p{
-        margin-right: 1rem;
+
+    p {
+      margin-right: 1rem;
     }
-  
   }
   .registerContainer {
-    
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - 150px);
-  
+    height: 100vh;
+
     .container {
       margin-top: 0;
+      padding: 2rem 4rem;
+      /* From https://css.glass */
+
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
       .LogoText {
-        color: rgb(85, 9, 237);
+        color: rgb(234, 232, 237);
         text-align: center;
       }
-  
+
       .form {
         display: flex;
         flex-direction: column;
         align-items: start;
         justify-content: center;
         gap: 20px;
-  
+        h1 {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+        }
         input {
-          background-color: transparent;
           width: 400px;
           border-radius: 5px;
           padding: 10px 0;
           padding-left: 5px;
           border: 1px solid rgb(127, 125, 130);
+          color: white;
+          background-color: rgb(30, 38, 48);
         }
-  
+
         input:focus {
           outline: 1px solid rgb(92, 54, 246);
         }
@@ -60,17 +82,28 @@
           background-color: rgb(85, 9, 237);
           cursor: pointer;
 
-          .loader{
+          .loader {
             display: flex;
             align-items: center;
             justify-content: center;
-            
           }
         }
       }
-      p {
-        font-size: 10px;
+      .RouteLink {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: white;
+        font-size: 20px;
         text-align: end;
+        .Link {
+          text-decoration: none;
+          span {
+            color: skyblue;
+          }
+        }
       }
       .ErrMsg {
         padding: 0.3rem;
@@ -84,8 +117,9 @@
         text-align: center;
         border-radius: 5px;
         background-color: rgb(119, 244, 161);
+        color: rgb(64, 63, 63);
       }
-  
+
       .password-container {
         position: relative;
         display: flex;
@@ -99,10 +133,15 @@
           font-size: 15px;
         }
       }
-      
+      .spams {
+        color: rgb(200, 200, 200);
+        font-size: 20px;
+        text-align: center;
+        width: 100%;
+      }
     }
   }
-  .SuccessMsg{
+  .SuccessMsg {
     height: calc(100vh - 150px);
     display: flex;
     flex-direction: column;
@@ -116,6 +155,11 @@
       justify-content: center;
       gap: 10px;
       font-size: 35px;
+      #message {
+        background-color: rgb(119, 244, 161);
+        padding: 5px 10px;
+        color: black;
+      }
     }
 
     button {
@@ -123,48 +167,41 @@
       border: 0;
       border-radius: 10px;
       text-align: center;
-      
+
       padding: 5px 20px;
       height: 40px;
       background-color: rgb(85, 9, 237);
       cursor: pointer;
-
-      
     }
   }
-  .loading{
+  .loading {
     height: calc(100vh - 150px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
-  
-  
 }
-.reset-password{
- font-size: 20px;
- color: gray;
+.reset-password {
+  font-size: 20px;
+  color: gray;
   text-align: center;
   width: 100%;
-  span{
+  span {
     cursor: pointer;
   }
 }
-.OtpContainer{
-  
+.OtpContainer {
   width: 100%;
   height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   .LogoText {
     color: rgb(85, 9, 237);
     text-align: center;
-    
-    
   }
   .otpForm {
     display: flex;
@@ -172,16 +209,20 @@
     align-items: start;
     justify-content: center;
     gap: 20px;
-  
+
     input {
-      background-color: transparent;
       width: 400px;
       border-radius: 5px;
       padding: 10px 0;
       padding-left: 5px;
-      border: 1px solid rgb(127, 125, 130);
+      border: none;
+          background-color: rgb(30,38,48);
+          color: white;
+          &::placeholder{
+            color:#5B96F7;
+          }
     }
-  
+
     input:focus {
       outline: 1px solid rgb(92, 54, 246);
     }
@@ -195,13 +236,18 @@
       height: 40px;
       background-color: rgb(85, 9, 237);
       cursor: pointer;
-  
-      .loader{
+
+      .loader {
         display: flex;
         align-items: center;
         justify-content: center;
-        
       }
+    }
+    .spams {
+      color: rgb(200, 200, 200);
+      font-size: 20px;
+      text-align: center;
+      width: 100%;
     }
   }
 }

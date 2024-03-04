@@ -23,12 +23,10 @@ const useSendMessage = () => {
         },
       });
       if (res.status === 200) {
-        
-        setMessages([...message, res.data.newMessage]); // Assuming res.data contains the message object returned by the server
+        setMessages([...message, res.data.newMessage]); 
       }
     } catch (error) {
       console.error("Error sending message:", error, error.response.data);
-      // Handle error gracefully
     }
   };
   

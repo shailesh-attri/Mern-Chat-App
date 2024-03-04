@@ -1,0 +1,296 @@
+@import '../../utils/cssConfigMixin.scss';
+
+.mainContainer {
+  background: url('../../assets/bg2.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  .header {
+    width: 100%;
+    text-align: end;
+   
+    p{
+        margin-right: 1rem;
+    }
+  
+  }
+  .registerContainer {
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+  
+    .container {
+      margin-top: 0;
+      padding: 1rem 4rem;
+      /* From https://css.glass */
+      
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(5px);
+      // border: 1px solid rgba(255, 255, 255, 0.3);
+      @include MD{
+        padding: 2rem 2rem;
+      }
+      @include mobile{
+        padding: 2rem 0.5rem;
+      }
+      .LogoText {
+        color: rgb(227, 225, 231);
+        text-align: center;
+      }
+  
+      .form {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        gap: 20px;
+        .logo{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          width: 100%;
+          
+          img{
+            width: 70px;
+            height: 70px;
+          }
+          span{
+            
+            
+            color: rgb(255, 255, 255);
+            font-weight: 700;
+            font-size:40px;
+          }
+        }
+        input {
+          width: 400px;
+          @include SM{
+            width: 300px;
+          }
+          @include mobile{
+            width: 250px;
+          }
+          border-radius: 5px;
+          padding: 10px 0;
+          padding-left: 5px;
+          border: none;
+          background-color: rgb(30,38,48);
+          color: white;
+          &::placeholder{
+            color:#5B96F7;
+          }
+        }
+  
+        input:focus {
+          outline: 1px solid rgb(92, 54, 246);
+        }
+        button {
+          color: white;
+          border: 0;
+          border-radius: 10px;
+          text-align: center;
+          width: 100%;
+          padding: 5px;
+          height: 40px;
+          background-color: #0f62e6;
+          cursor: pointer;
+          
+          .loader{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+          }
+        }
+      }
+      .RouteLink {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: white;
+        font-size: 20px;
+        @include mobile{
+          font-size: 10px;
+        }
+        text-align: end;
+        .Link{
+
+          text-decoration: none;
+          span{
+            color: skyblue;
+          }
+        }
+      }
+      .ErrMsg {
+        padding: 0.3rem;
+        text-align: center;
+        border-radius: 5px;
+        background-color: rgb(244, 119, 119);
+      }
+      .SuccessMsg {
+        height: 30px;
+        padding: 0.3rem;
+        text-align: center;
+        border-radius: 5px;
+        background-color: rgb(119, 244, 161);
+        color: rgb(64, 63, 63);
+        .Message{
+          #message{
+            background-color: rgb(119, 244, 161);
+            color: black;
+          }
+        }
+      }
+  
+      .password-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .passwordShow,
+        .passwordHide {
+          cursor: pointer;
+          position: absolute;
+          right: 10px;
+          font-size: 15px;
+        }
+      }
+      .spams{
+        color: rgb(200, 200, 200);
+        font-size: 20px;
+        text-align: center;
+        width: 100%;
+      }
+      
+    }
+  }
+  .SuccessMsg{
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .Message {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 35px;
+    }
+
+    button {
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      text-align: center;
+      
+      padding: 5px 20px;
+      height: 40px;
+      background-color: rgb(85, 9, 237);
+      cursor: pointer;
+
+      
+    }
+  }
+  .loading{
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
+}
+.reset-password{
+ font-size: 20px;
+ color: gray;
+  text-align: center;
+  width: 100%;
+  span{
+    cursor: pointer;
+  }
+}
+.OtpContainer{
+  
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  .LogoText {
+    color: rgb(85, 9, 237);
+    text-align: center;
+    
+    
+  }
+  .otpForm {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+  
+    input {
+      width: 400px;
+      border-radius: 5px;
+      padding: 10px 0;
+      padding-left: 5px;
+      border: none;
+          background-color: rgb(30,38,48);
+          color: white;
+          &::placeholder{
+            color:#5B96F7;
+          }
+    }
+  
+    input:focus {
+      outline: 1px solid rgb(92, 54, 246);
+    }
+    button {
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      text-align: center;
+      width: 100%;
+      padding: 5px;
+      height: 40px;
+      background-color: rgb(85, 9, 237);
+      cursor: pointer;
+  
+      .loader{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+      }
+    }
+    .spams{
+      color: rgb(200, 200, 200);
+      font-size: 20px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+}

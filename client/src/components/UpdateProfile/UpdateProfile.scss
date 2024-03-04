@@ -1,11 +1,8 @@
+@import "../../utils/cssConfigMixin.scss";
 .mainProfile {
   position: relative;
-  margin-top: 1rem;
-  margin-right: 1rem;
-  width: 60%;
-
   .Header {
-    border-bottom: 1px solid rgb(200, 199, 199);
+    
     padding: 0 1rem;
     height: 70px;
     display: grid;
@@ -14,7 +11,7 @@
     justify-content: center;
     gap: 10px;
     position: relative;
-    width: 100%;
+    
   
     .option {
       width: 100%;
@@ -34,7 +31,7 @@
         bottom: 0;
         width: 0;
         height: 2px;
-        background-color: blue;
+        background-color: #1b6ff7;
         transition: width 0.3s ease; /* Transition width for the sliding effect */
       }
   
@@ -49,13 +46,16 @@
   }
   
   .mainInputs {
+    background-color: rgb(30, 38, 48);
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: end;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
     width: 100%;
+    height: calc(100vh - 70px);
     position: relative;
-
+    border-radius: 10px 0  0 10px;
     .profileImage {
       width: 100%;
       position: relative;
@@ -63,20 +63,30 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 400px;
-      gap: 50px;
+      gap: 30px;
+      
+      .Loader{
+        background-color: rgb(7,7,7);
+        width: 200px;
+        height: 200px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       .dpImage {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 200px;
         height: 200px;
+       
         img {
           width: 100%;
           height: 100%;
           border-radius: 20px;
-          border: 2px solid gray;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          border: 2px solid rgb(26, 25, 25);
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 15px;
         }
       }
       .upload {
@@ -86,11 +96,19 @@
         justify-content: space-between;
         gap: 50px;
         width: 100%;
+        @include LG{
+          gap: 10px;
+          justify-content: space-around;
+        }
         .uploadImg{
-            padding: 10px 15px;
-                border-radius: 5px;
-                background-color: transparent;
-                border: 1px solid rgb(185, 184, 184);
+          @include LG{
+            padding: 7px 5px;
+          }
+            padding: 7px 15px;
+            border-radius: 5px;
+            color: #5B96F7;
+                background-color: rgb(7,7,7);
+                // border: 1px solid rgb(185, 184, 184);
                 cursor: pointer;
                 transition: box-shadow 0.3s ease;
                 &:hover{
@@ -103,8 +121,9 @@
                 width: 100%;
                 padding: 10px 15px;
                 border-radius: 5px;
-                background-color: transparent;
-                border: 1px solid rgb(185, 184, 184);
+                color: #5B96F7;
+                background-color: rgb(7,7,7);
+                border: none;
                 cursor: pointer;
                 transition: box-shadow 0.3s ease;
                 &:hover{
@@ -131,7 +150,7 @@
     align-items: start;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - 450px);
+    
     form {
       width: 500px;
       display: flex;
@@ -139,13 +158,23 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      height: 100%;
+      @include LG{
+        width: 400px;
+      }
       input {
         padding: 0 10px;
         height: 50px;
         width: 500px;
+        @include LG{
+          width: 400px;
+        }
         border-radius: 10px;
-        border: 1px solid rgb(200, 199, 199);
+        border: none;
         outline: none;
+        background-color: rgb(7,7,7);
+        color: white;
+        
       }
       button {
         cursor: pointer;
@@ -153,12 +182,13 @@
         width: 150px;
         height: 50px;
         border-radius: 10px;
-        border: 1px solid #03045e;
+        border: none;
         position: relative;
         overflow: hidden;
         transition: all 0.5s ease-in;
         z-index: 1;
-
+        background-color: rgb(7,7,7);
+       
         &::before,
         &::after {
           content: "";
@@ -170,6 +200,7 @@
           transition: all 0.5s;
           overflow: hidden;
           z-index: -1;
+          
         }
 
         &::before {
@@ -188,7 +219,7 @@
         }
 
         span {
-          color: #03045e;
+          color: #5B96F7;
           font-size: 18px;
           transition: all 0.3s ease-in;
         }
@@ -212,6 +243,14 @@
         font-size: 15px;
         color: rgb(21, 187, 21);
       }
+      .successTrue{
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+        bottom: 0;
+        color: rgb(21, 187, 21);
+        transition: color 0.3s ease-in-out;
+      }
     }
   }
   .updatePassWord{
@@ -219,7 +258,8 @@
     align-items: center;
     justify-content: center;
     height: calc(100vh - 70px);
-    
+    background-color: rgb(30, 38, 48);
+    border-radius: 10px 0 0 10px;
   }
   .sbtBtn{
     width: 100%;
