@@ -10,9 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { RiFullscreenLine } from "react-icons/ri";
 import { FullScreenContext  } from "../../utils/fullScreenContext";
-import { MdGroupAdd } from "react-icons/md";
 const MiniSidebar = ({ sendDataToParent }) => {
-  const {toggleFullScreen,sendToggle} = useContext(FullScreenContext )
+  const {toggleFullScreen} = useContext(FullScreenContext )
   const [ThisUser, setThisUser] = useState([]);
   const { authUser, avatarMessage, sendLoggedData } =
     useContext(AuthContext);
@@ -54,7 +53,6 @@ const MiniSidebar = ({ sendDataToParent }) => {
           <img src={N_logo} alt="" />
         </div>
         <div className="UserLog_and_out">
-        <MdGroupAdd onClick={()=>sendToggle((prev)=>!prev)}/>
         <RiFullscreenLine onClick={toggleFullScreen}/>
           <span className="MdLogout">
             <MdLogout onClick={Logout} />

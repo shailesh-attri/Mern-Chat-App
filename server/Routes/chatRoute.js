@@ -1,11 +1,16 @@
 import express from 'express';
-const router = express.Router();
 import { ChatController } from '../controllers/ChatController.js';
 
-router.post('/accessChat', ChatController.accessChat)
-router.get('/:userID', ChatController.fetchChat)
-router.post('/blockedUsers', ChatController.BlockedUsers)
-router.post('/UnBlockedUsers', ChatController.UnBlockedUsers)
-router.get('/AllBlocked/:userId', ChatController.AllBlocked)
+const router = express.Router();
 
-export default router
+// POST routes
+router.post('/accessChat', ChatController.accessChat);
+router.post('/blockedUsers', ChatController.BlockedUsers);
+router.post('/UnBlockedUsers', ChatController.UnBlockedUsers);
+
+// GET routes
+router.get('/:userID', ChatController.fetchChat);
+router.get('/AllBlocked/:userId', ChatController.AllBlocked);
+
+
+export default router;

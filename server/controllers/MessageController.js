@@ -19,20 +19,20 @@ const MessageController = {
       // Check if sender is blocked by receiver or vice versa
       const isSenderBlocked = await blockedUser.findOne({ Sender: senderId, BlockedUser: receiverId });
       const isReceiverBlocked = await blockedUser.findOne({ Sender: receiverId, BlockedUser: senderId });
-      console.log("Sender",isSenderBlocked, "Blocked",isReceiverBlocked);
+      
       // If sender is blocked by receiver, mark message as blocked
       const blockedAt = isSenderBlocked ? new Date() : null;
       if (isSenderBlocked || isReceiverBlocked) {
         return res.status(404).json({message:"User blocked"})
       }
-      console.log("blockedAt:", blockedAt);
+      
       let imageUrl;
   
       if (req.file) {
         const filePath = req.file.path
         // Upload image to Cloudinary and get URL
         imageUrl = await ImageFileUpload(filePath);
-        console.log("imageUrl", imageUrl);
+        
       }
   
       // Create new message object
@@ -92,7 +92,7 @@ export { MessageController };
 const ImageFileUpload = async (filePath) => {
   try {
     const result = await cloudinary.uploader.upload(filePath); // Upload file to Cloudinary
-    console.log('Uploaded to Cloudinary:', result);
+    
 
     fs.unlink(filePath, (err) => {
       if (err) {

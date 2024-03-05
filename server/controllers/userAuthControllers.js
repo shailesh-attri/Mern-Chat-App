@@ -1,37 +1,39 @@
 import bcrypt from "bcrypt";
-import { user } from "../Models/user.model.js";
-import HttpError from "../Models/error.model.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import HttpError from "../Models/error.model.js";
 import generateTokenAndSetCookie from "../utils/generateTokenandSetCookie.js";
 import JwtForRegistration from "../utils/NewRegisterJwt.js";
+import { user } from "../Models/user.model.js";
+
 const otpMap = new Map();
 
 const userAuthController = {
-  // Controller for registration
+  // Controller for user registration
   register: async (req, res, next) => {
     try {
       const { email, username, password, fullName } = req.body;
       if (!username || !email || !password || !fullName) {
         return res.status(422).send({ message: "Fill in the required fields" });
       }
+
       const newUserName = username;
-      const userNameExits = await user.findOne({ username: newUserName });
-      if (userNameExits) {
+      const userNameExists = await user.findOne({ username: newUserName });
+      if (userNameExists) {
         return res.status(201).send({ message: "Username already exists" });
       }
 
       const newEmail = email.toLowerCase();
-      const UserExists = await user.findOne({ email: newEmail });
-
-      if (UserExists) {
+      const userExists = await user.findOne({ email: newEmail });
+      if (userExists) {
         return res.status(202).send({ message: "Email already exists" });
       } else {
         function generateOtp() {
           return Math.floor(100000 + Math.random() * 900000).toString();
         }
         const otp = generateOtp();
-        console.log(otp);
+        
+
         const transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
           service: "gmail",
@@ -42,15 +44,17 @@ const userAuthController = {
             pass: process.env.GMAIL_APP_PASSWORD,
           },
         });
+
         const mailOptions = {
           from: "shaileshattri83@gmail.com",
           to: newEmail,
           subject: "Password reset OTP",
           text: `Your OTP for password reset is: ${otp}`,
         };
+
         await transporter.sendMail(mailOptions);
         otpMap.set(newEmail, otp);
-        
+
         const token = JwtForRegistration(otp);
         res.status(200).json({
           message: "Email verification OTP successfully sent.",
@@ -62,6 +66,8 @@ const userAuthController = {
       res.status(500).send({ message: "User registration failed" });
     }
   },
+
+  // Controller for email verification
   registration_verify: async (req, res) => {
     const { email, password, fullName, username, otp } = req.body;
     try {
@@ -100,7 +106,7 @@ const userAuthController = {
     } catch (error) {}
   },
 
-  //  controller for login form
+  // Controller for user login
   login: async (req, res, next) => {
     const { email, password } = req.body;
     try {
@@ -116,11 +122,9 @@ const userAuthController = {
         }
 
         const { _id: id } = User;
-
         // JWT token generation
         const time = "15d";
         const token = generateTokenAndSetCookie(id, time);
-        
         return res.status(200).json({
           message: "Login successful",
           token,
@@ -131,15 +135,9 @@ const userAuthController = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  logout: (req, res) => {
-    try {
-      res.cookie("token", "", { maxAge: 0 });
-      res.status(200).json({ message: "Logged out successfully" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
 
+
+  // Controller for sending password reset OTP
   email_verify: async (req, res, next) => {
     const { emailReset } = req.body;
     console.log(emailReset);
@@ -191,6 +189,7 @@ const userAuthController = {
     }
   },
 
+  // Controller for verifying OTP for password reset
   verify_otp: async (req, res, data) => {
     try {
       const { otp } = req.body;
@@ -210,6 +209,8 @@ const userAuthController = {
       return res.status(500).json({ message: "Internal sever error" });
     }
   },
+
+  // Controller for resetting user password
   reset_password: async (req, res, next) => {
     const { NewPassword } = req.body;
     const userId = req.userID; // Accessing it from req object
@@ -220,7 +221,10 @@ const userAuthController = {
       if (!MailUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      const oldPassword = await bcrypt.compare(NewPassword, MailUser.password);
+      const oldPassword = await bcrypt.compare(
+        NewPassword,
+        MailUser.password
+      );
 
       if (oldPassword) {
         res.status(404).json("do not set old passwords");
@@ -242,4 +246,5 @@ const userAuthController = {
     }
   },
 };
+
 export default userAuthController;
