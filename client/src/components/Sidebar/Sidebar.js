@@ -28,7 +28,7 @@ const Sidebar = ({sendMessageRoute}) => {
   const [UserAllChat, setUserAllChat] = useState([]);
   const [latestMessage, setLatestMessage] = useState([]);
   // Routes initializing
-  const fetchChatRouter = `${fetchChatRoute}/${authUser?.id}`;
+  const fetchChatRouter = `/api/user/chat/${authUser?.id}`;
 
   // UseFunctionsContext
   const navigate = useNavigate();
@@ -61,14 +61,13 @@ const Sidebar = ({sendMessageRoute}) => {
   //   Event handlers
   
   const fetchChat = async () => {
+    alert("Loading")
     try {
       const result = await axios.get(fetchChatRouter);
       if (result.status === 200) {
         const receiverList = result.data.Receiver;
         // Sort the Receiver array based on the lastCreated timestamp in descending order
-        receiverList.sort(
-          (a, b) => new Date(b.receiver.createdAt) - new Date(a.receiver.createdAt)
-          );
+          console.log(receiverList);
           setUserAllChat(receiverList);
         }
       } catch (error) {
@@ -78,7 +77,7 @@ const Sidebar = ({sendMessageRoute}) => {
   useEffect(() => {
       fetchChat();
       
-    }, [avatarMessage,messages, ChatMessages, selectedConversation,sendMessageRoute]);
+    }, [authUser,avatarMessage,messages, ChatMessages, selectedConversation,sendMessageRoute]);
     useEffect(()=>{
       if(selectedConversation && avatarMessage){
         fetchChat()
@@ -102,6 +101,7 @@ const Sidebar = ({sendMessageRoute}) => {
       if (result.status === 200) {
         setUser(result.data);
         setLoading(false);
+        console.log(result.data);
       } else {
         setUser("No user found");
       }
@@ -129,7 +129,7 @@ const Sidebar = ({sendMessageRoute}) => {
         </button>
       </form>
       <h1>
-        <span>{isChats ? 'Chats' : 'Search result'}</span>
+        <span onClick={fetchChat}>{isChats ? 'Chats' : 'Search result'}</span>
         {!isChats && <span className="MdLogout">
               <RxCross2 onClick={() => setIsChats(true)} size="25" />
         </span>} 
@@ -184,7 +184,7 @@ const Sidebar = ({sendMessageRoute}) => {
                 </div>
               ))
             ) : (
-              <div>No chats available</div>
+              <div >No chats available</div>
             )}
           </div>
         </div>

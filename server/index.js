@@ -41,7 +41,13 @@ app.use('/api/user/message', messageRoute);
 // app.use(notFound);
 app.use(HandleError);
 
-
+if (process.env.NODE_ENV === 'production') {
+  console.log('Server is running in production mode.');
+   // Log the MongoDB connection URI
+} else {
+  console.log('Server is running in development mode.');
+  console.log(`Server is running on: http://localhost:${PORT}`);
+}
 
 // Connect to MongoDB
 connectDatabase();
