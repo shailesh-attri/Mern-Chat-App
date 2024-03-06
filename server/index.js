@@ -43,7 +43,7 @@ app.use(HandleError);
 
 if (process.env.NODE_ENV === 'production') {
   console.log('Server is running in production mode.');
-  console.log('Database Host:', process.env.MONGODB_URI); // Log the MongoDB connection URI
+   // Log the MongoDB connection URI
 } else {
   console.log('Server is running in development mode.');
   console.log(`Server is running on: http://localhost:${PORT}`);
