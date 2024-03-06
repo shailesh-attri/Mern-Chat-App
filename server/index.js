@@ -1,5 +1,4 @@
-
- import express from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDatabase from './database/connectdb.js';
@@ -10,19 +9,30 @@ import userAuthRoute from './Routes/userAuthRoute.js';
 import cookieParser from 'cookie-parser';
 import messageRoute from './Routes/messageRoute.js';
 import chatRoute from './Routes/chatRoute.js';
-import {app, server} from './socket/socket.io.js'
-
+import { app, server } from './socket/socket.io.js';
 
 dotenv.config();
 
+const PORT = 8000;
+
+const corsOptions = {
+  origin: ['https://nexus-chat-app.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+};
+
 // Set up CORS globally for all routes
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors(corsOptions));
 
 // Other middleware and routes
 app.use(bodyParser.json());
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Mern Chat App! Server is running successfully');
+});
+
 app.use("/api/user/auth", userAuthRoute);
 app.use('/api/user', userRoute);
 app.use('/api/user/chat', chatRoute);
@@ -31,11 +41,18 @@ app.use('/api/user/message', messageRoute);
 // app.use(notFound);
 app.use(HandleError);
 
+if (process.env.NODE_ENV === 'production') {
+  console.log('Server is running in production mode.');
+  console.log('Database Host:', process.env.MONGODB_URI); // Log the MongoDB connection URI
+} else {
+  console.log('Server is running in development mode.');
+  console.log(`Server is running on: http://localhost:${PORT}`);
+}
 
-// Connect to the database
+// Connect to MongoDB
 connectDatabase();
 
-// Start listening on the specified port
-server.listen(process.env.PORT, () => {
-  console.log(`Server is running on Port: ${process.env.PORT}`);
+// Start the server
+server.listen(PORT, () => {
+  console.log(`Server is running on Port: ${PORT}`);
 });

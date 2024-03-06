@@ -296,7 +296,7 @@ const Register = () => {
                       "Verify"
                     )}
                   </button>
-                  <p className="spams">Check in your Spams. Don't worry it is safe</p>
+                  <p className="spams">Please check OTP in your Spam folder once. Don't worry it is safe</p>
                 </form>
       
       </div>

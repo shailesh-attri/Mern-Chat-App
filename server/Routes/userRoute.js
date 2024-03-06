@@ -12,7 +12,7 @@ router.get('/:id', UserController.getUser);
 
 // PUT requests
 router.put('/edit_profile', JwtAuthMiddleware, UserController.editProfile);
-router.put('/findUser', UserController.findUser);
+router.post('/findUser', UserController.findUser);
 
 // PATCH requests
 router.patch('/:userId', upload.single('dpImage'), UserController.changeAvatar);

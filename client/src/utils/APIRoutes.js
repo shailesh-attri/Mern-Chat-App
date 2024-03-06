@@ -1,4 +1,10 @@
-const host = "http://localhost:8000";
+let host = "http://localhost:8000";
+
+// Check if the environment is production (Vercel deployment)
+if (process.env.NODE_ENV === "production") {
+    // If so, set the host to the Vercel URL
+    host = "https://backend-chat-app-opal.vercel.app";
+}
 
 // useAuthRoutes
 const AuthAPI = "api/user/auth";
