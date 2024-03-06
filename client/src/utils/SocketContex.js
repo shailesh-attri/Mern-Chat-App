@@ -21,7 +21,7 @@ export const SocketContextProvider = ({ children }) => {
         
         console.log("socket", socket);
 		if (authUser) {
-			const socket = io.connect("https://backend-chat-app-opal.vercel.app", {
+			const socket = io.connect("http://localhost:8000", {
 				query: {
 					userId: authUser?.id,
 				},
