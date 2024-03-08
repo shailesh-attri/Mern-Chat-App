@@ -28,7 +28,7 @@ const Sidebar = ({sendMessageRoute}) => {
   const [UserAllChat, setUserAllChat] = useState([]);
   const [latestMessage, setLatestMessage] = useState([]);
   // Routes initializing
-  const fetchChatRouter = `/api/user/chat/${authUser?.id}`;
+  const fetchChatRouter = `${fetchChatRoute}/${authUser?.id}`;
 
   // UseFunctionsContext
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const Sidebar = ({sendMessageRoute}) => {
   //   Event handlers
   
   const fetchChat = async () => {
-    alert("Loading")
+    
     try {
       const result = await axios.get(fetchChatRouter);
       if (result.status === 200) {

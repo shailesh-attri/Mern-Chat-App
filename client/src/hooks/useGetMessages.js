@@ -6,7 +6,7 @@ import { AuthContext } from "../utils/AuthContext";
 const useGetMessages = () => {
   const { authUser } = useContext(AuthContext);
 
-  const { message, setMessages, selectedConversation, setCurrentMessage } =
+  const { message, setMessages, selectedConversation } =
     useConversation();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const useGetMessages = () => {
         const result = await axios.post(accessChatRoute, data);
         if (result.status === 200) {
           setMessages(result?.data);
-          setCurrentMessage(result?.data);
+          
         }
       } catch (error) {
         console.error(error.message, error);

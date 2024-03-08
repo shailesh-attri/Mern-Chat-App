@@ -151,17 +151,17 @@ const [isVerified, setVerified] = useState(false);
       // Using localStorage
       localStorage.setItem("userData", JSON.stringify(res.data));
 
+      setSuccessResponse(false);
+      setErrMsg(false);
       if (res.status === 200) {
         const userOTPData = res.data.id;
         setAuthUser(res.data);
 
-        setSuccessResponse(false);
+        setSuccessResponse(true);
+        setHandleValidationMessage(res.data.message);
+        setLoading(false);
 
-        setErrMsg(false);
-        setTimeout(() => {
-          setSuccessResponse(true);
-          setHandleValidationMessage(res.data.message);
-          setLoading(false);
+        
           setTimeout(() => {
             setHandleValidationMessage("Redirecting Please wait...");
             toast.success("Logged in successfully");
@@ -169,7 +169,6 @@ const [isVerified, setVerified] = useState(false);
               navigate(`/chats/user/${userOTPData}`);
             }, 1000);
           }, 1000);
-        }, 2000);
       }
     } catch (error) {
       // Other server errors
@@ -180,7 +179,7 @@ const [isVerified, setVerified] = useState(false);
       setTimeout(() => {
         setErrMsg(true);
         setReset(true);
-        setHandleValidationMessage("Invalid credentials. Please try again");
+        setHandleValidationMessage("Do not repeat old password. Please try again");
         setLoading(false);
       }, 2000);
     }

@@ -55,7 +55,7 @@ const AppContent = () => {
   return (
     <div className="App">
       <div className="Message">
-        <p>Thank you for exploring our website. We apologize, but our chat app is currently unavailable for devices with a screen width lower than 768px. We're diligently working on an Android app, and we'll keep you updated on its progress</p>
+        <p>Thank you for visiting our website. We regret to inform you that our chat app is currently unavailable for devices with a screen width lower than 768px. We are actively developing an Android app, and we will keep you updated on its progress. Please try accessing the chat app on devices with a higher screen width. Thank you for your understanding.</p>
        
       </div>
       <div className="AppData">

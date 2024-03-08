@@ -15,6 +15,7 @@ import defaultImage from "../../assets/defaultImage.png";
 import N_logo from "../../assets/N_logo.png";
 import { BlockedUsersContext } from "../../utils/BlockedUsers";
 import getBlocklist from "../../hooks/getBlocklist";
+import { Oval } from "react-loader-spinner";
 const Conversation = ({ sendDataToParent, sendUserId }) => {
   // Context providers
   useListenMessage();
@@ -165,7 +166,7 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
           </div>
           <div className="chat">
             <div className="chatBox" id="chatBox" ref={chatBoxRef}>
-              {ChatMessages &&
+              {ChatMessages ?
                 ChatMessages.length > 0 &&
                 ChatMessages.map((ThisMessage) => {
                   const fromMe = ThisMessage?.msgSender === authUser?.id;
@@ -202,7 +203,17 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
                       </div>
                     </div>
                   );
-                })}
+                }) : <div className="loader">
+              <Oval
+                visible={true}
+                height="35"
+                width="30"
+                color="#fff"
+                ariaLabel="triangle-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+              />
+            </div>}
               {ChatMessages && ChatMessages.length === 0 && (
                 <p className="StartChat">
                   ------- Send a message to start chat -------

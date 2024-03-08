@@ -7,6 +7,7 @@ import { selectedUserContext } from "../../utils/selectedUserContext";
 import defaultImage from "../../assets/defaultImage.png";
 import useBlockUser from "../../hooks/useBlockUser";
 import { BlockedUsersContext } from "../../utils/BlockedUsers";
+import { TailSpin } from "react-loader-spinner";
 const ProfilePage = ({ selectedUserId }) => {
   const {BlockedUsers} = useContext(BlockedUsersContext);
   const {handleBlockUser,handleUnBlockUser} = useBlockUser()
@@ -14,16 +15,19 @@ const ProfilePage = ({ selectedUserId }) => {
   const { selectedUser } = useContext(selectedUserContext);
   const [showImage, setImage] = useState(null);
   const [user, setUser] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const getProfileRoute = `${getSelectedProfile}/${selectedUserId}`;
   useEffect(() => {
     setImage(loggedUser?.avatarUrl);
   }, [loggedUser]);
   useEffect(() => {
     const handleGetProfile = async () => {
+      setLoading(true)
       try {
         const res = await axios.get(getProfileRoute);
         if (res.status === 200) {
           setUser(res.data.otherDetails);
+          setLoading(false)
         }
       } catch (error) {
         console.log("Error getting profile", error);
@@ -60,6 +64,7 @@ const ProfilePage = ({ selectedUserId }) => {
       )}
       </div>
       <div className="box">
+      {!isLoading ? 
         <div className="Inputs">
           <div className="profileImage">
             <div className="dpImage">
@@ -86,6 +91,15 @@ const ProfilePage = ({ selectedUserId }) => {
             </div>
           </div>
         </div>
+      :
+      <div className="Loader">
+
+        <TailSpin 
+              height="30"
+              width="40"/>
+        </div>
+      }
+        
       </div>
     </div>
   );
