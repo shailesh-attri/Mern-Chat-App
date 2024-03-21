@@ -10,11 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { RiFullscreenLine } from "react-icons/ri";
 import { FullScreenContext  } from "../../utils/fullScreenContext";
+import useBlocklist from "../../hooks/getBlocklist";
 const MiniSidebar = ({ sendDataToParent }) => {
   const {toggleFullScreen} = useContext(FullScreenContext )
   const [ThisUser, setThisUser] = useState([]);
   const { authUser, avatarMessage, sendLoggedData } =
     useContext(AuthContext);
+  const {handleBlocklist} = useBlocklist()
   const navigate = useNavigate();
   const getUser = `${getUserRoute}/${authUser?.id}`;
 
@@ -26,7 +28,7 @@ const MiniSidebar = ({ sendDataToParent }) => {
         if (res.status === 200) {
           sendLoggedData(res.data.ThisUser);
           setThisUser(res.data.ThisUser);
-         
+          handleBlocklist(authUser?.id)
         }
       } catch (error) {
         console.log(error.message);

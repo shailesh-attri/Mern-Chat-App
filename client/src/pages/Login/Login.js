@@ -33,6 +33,7 @@ const [SuccessResponse, setSuccessResponse] = useState(false);
 const [handleValidationMessage, setHandleValidationMessage] = useState("");
 const [showPassword, setShowPassword] = useState(false);
 const [isPasswordTyped, setIsPasswordTyped] = useState(false);
+const [reqMessage, setRequestMessage] = useState("");
 
 // State for user authentication
 const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -145,6 +146,7 @@ const [isVerified, setVerified] = useState(false);
   };
   const handleLogin = async (e) => {
     e.preventDefault();
+    setRequestMessage("Please note that our servers are currently hosted on a free instance, which may experience delays due to inactivity. Your request might take up to 50 seconds or more to process..")
     setLoading(true);
     try {
       const res = await axios.post(loginRoute, loginData);
@@ -156,7 +158,7 @@ const [isVerified, setVerified] = useState(false);
       if (res.status === 200) {
         const userOTPData = res.data.id;
         setAuthUser(res.data);
-
+        setRequestMessage(null)
         setSuccessResponse(true);
         setHandleValidationMessage(res.data.message);
         setLoading(false);
@@ -179,7 +181,7 @@ const [isVerified, setVerified] = useState(false);
       setTimeout(() => {
         setErrMsg(true);
         setReset(true);
-        setHandleValidationMessage("Do not repeat old password. Please try again");
+        setHandleValidationMessage("Invalid credentials. Please try again");
         setLoading(false);
       }, 2000);
     }
@@ -333,6 +335,7 @@ const [isVerified, setVerified] = useState(false);
           )}
         </div>
       </div>
+      <p id='reqMessage'>{reqMessage}</p>
       <ToastContainer />
     </div>
   ) : (
@@ -402,7 +405,7 @@ const ResetPassword = () => {
         setTimeout(() => {
           setErrMsg(true);
           setReset(false);
-          setHandleValidationMessage("Password update failed Please try again");
+          setHandleValidationMessage("Do not repeat old password. Please choose a new one");
           setLoading(false);
         }, 2000);
       }

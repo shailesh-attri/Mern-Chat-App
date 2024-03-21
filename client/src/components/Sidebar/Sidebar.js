@@ -32,7 +32,7 @@ const Sidebar = ({sendMessageRoute}) => {
 
   // UseFunctionsContext
   const navigate = useNavigate();
-  const { selectedConversation, setSelectedConversation } = useConversation();
+  const { selectedConversation, setSelectedConversation,blockedUsers } = useConversation();
   const isSelectedConversation = (user) => {
     return selectedConversation && selectedConversation._id === user._id;
   };
@@ -159,9 +159,10 @@ const Sidebar = ({sendMessageRoute}) => {
                         onlineUsers.map((online, index) => {
                           const isOnline = online.includes(chat?.receiver._id);
                           const isBlocked = BlockedUsers.includes(chat?.receiver._id)
+                          const shouldRenderOnlineStatus = blockedUsers.includes(chat?.receiver._id)
                           return (
                             isOnline && (
-                              !isBlocked && 
+                              !isBlocked && !shouldRenderOnlineStatus && 
                               <div
                                 className="OnlineIndicator"
                                 key={index}

@@ -26,6 +26,7 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
   const { selectedConversation, blockedUsers } = useConversation();
   const { onlineUsers } = useSocketContext();
   const chatBoxRef = useRef(null);
+  const emojiRef = useRef(null);
   const { sendMessage } = useSendMessage();
   const { message: ChatMessages } = useGetMessages();
   // useState
@@ -34,6 +35,8 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
   const [image, setImage] = useState(null);
   const [ShowImage, setShowImage] = useState(null);
   const [messages, setMessages] = useState("");
+  const [isLargeImage, setIsLargeImage] = useState(false);
+  const [ThisImage, setThisImage] = useState(null);
 
   // Event handlers
   const handleInputFromSender = (e) => {
@@ -45,6 +48,20 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
   const handleEmoji = () => {
     setShowEmoji((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+        setShowEmoji(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   const PickEmoji = (emojiObject) => {
     setMessages((prev) => prev + emojiObject.emoji);
   };
@@ -185,9 +202,11 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
                             src={ThisMessage?.fileUrl}
                             alt="Uploaded"
                             className={`${fromMe ? "BgBlue" : "bgBlack"}`}
+                            onClick={()=>{setIsLargeImage(prev=>!prev); setThisImage(ThisMessage?.fileUrl)}}
                           />
                         </span>
                       )}
+                        
                       <div className="MessageContainer">
                         <div
                           className={`${fromMe ? "flex-end" : "flex-start"}`}
@@ -253,6 +272,7 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
               <button type="submit" className="sendIcon">
                 <VscSend />
               </button>
+              {isLargeImage && <ShowLargeImage ThisImage={ThisImage} setIsLargeImage={setIsLargeImage}></ShowLargeImage>}
             </form>
 
             {/* Display the uploaded image if available */}
@@ -276,7 +296,7 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
           
           
           {showEmoji && (
-            <div className="emojis">
+            <div className="emojis" ref={emojiRef}>
               <EmojiPicker onEmojiClick={PickEmoji} />
             </div>
           )}
@@ -292,8 +312,20 @@ const Conversation = ({ sendDataToParent, sendUserId }) => {
           </div>
         </div>
       )}
+      
     </>
   );
 };
 
 export default Conversation;
+
+const ShowLargeImage = ({ThisImage,setIsLargeImage})=>{
+    return (
+      <div className="Container">
+       <button className="closeBtn" onClick={()=>setIsLargeImage(prev=>!prev)} >X</button>
+       <div className="Image">
+        <img src={ThisImage} alt="" />
+       </div>
+      </div>
+    )
+}

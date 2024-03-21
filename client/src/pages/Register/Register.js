@@ -20,6 +20,7 @@ const Register = () => {
   const [handleBackendMessage, setHandleBackendMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordTyped, setIsPasswordTyped] = useState(false);
+  const [reqMessage, setRequestMessage] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -54,6 +55,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     console.log("FormData", formData);
     setLoading(true);
+    setRequestMessage("Please note that our servers are currently hosted on a free instance, which may experience delays due to inactivity. Your request might take up to 50 seconds or more to process..")
     e.preventDefault();
     const validateError = handleValidations();
     if(validateError) {
@@ -66,7 +68,7 @@ const Register = () => {
         if (response.status === 200) {
           sessionStorage.setItem("NewUserOTP_Token", JSON.stringify(response.data));
           setSuccessResponse(false);
-
+          setRequestMessage(null)
         setErrMsg(false);
         
          
@@ -298,6 +300,7 @@ const Register = () => {
                   </button>
                   <p className="spams">Please check OTP in your Spam folder once. Don't worry it is safe</p>
                 </form>
+                <p id='reqMessage'>{reqMessage}</p>
       
       </div>
       }

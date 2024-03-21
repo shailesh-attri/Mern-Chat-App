@@ -7,15 +7,16 @@ const useBlocklist = () => {
     const { sendBlock } = useContext(BlockedUsersContext);
 
     const handleBlocklist = async (authUserId) => {
-        console.log("authUserId", authUserId);
+        
         const getList = `${AllBlockedRoute}${authUserId}`;
         console.log(getList);
 
         try {
             const res = await axios.get(getList);
-            const IsUser = res.data.Senders.includes(authUserId)
+            const IsUser = res.data.BlockedUserDoc.includes(authUserId)
             if(IsUser) {
-                sendBlock(res.data.blockedUserIds);
+                sendBlock(res.data.BlockedUser);
+                console.log("res.data.BlockedUser", res.data.BlockedUser);
             }
         } catch (error) {
             console.log("Error in getting blocklist", error);

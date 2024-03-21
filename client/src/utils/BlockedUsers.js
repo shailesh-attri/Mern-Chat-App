@@ -8,6 +8,7 @@ export const BlockedUsersContextsProvider = ({children})=>{
     const sendBlock = (data)=>{
         setBlockedUsers(data)
     }
+    console.log("BlockedUsers", BlockedUsers);
     
     const sendBlockedUsers = (data)=>{
         setIsBlocking(data)
