@@ -95,14 +95,15 @@ const ChatController = {
   AllBlocked: async (req, res) => {
     const userId = req.params.userId;
     try {
-      const BlockedUserDoc = await blockedUser.find({ BlockedUser: userId });
+      const BlockedUserDoc = await blockedUser.find({ Sender: userId });
       if (BlockedUserDoc.length === 0) {
         return res
           .status(404)
           .json({ message: "User not found in blocked list" });
       }
-      const Senders = BlockedUserDoc.map((doc) => doc.Sender);
-      return res.status(200).json({ message: "Blockers fetched", Senders });
+      
+      const BlockedUser = BlockedUserDoc.map((doc) => doc.BlockedUser);
+      return res.status(200).json({ message: "Blockers fetched", BlockedUser,BlockedUserDoc });
     } catch (error) {
       console.log("An internal error", error);
       return res.status(500).json({ message: "An internal error", error });
