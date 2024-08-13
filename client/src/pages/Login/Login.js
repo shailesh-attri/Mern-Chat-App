@@ -146,7 +146,7 @@ const [isVerified, setVerified] = useState(false);
   };
   const handleLogin = async (e) => {
     e.preventDefault();
-    setRequestMessage("Please note that our servers are currently hosted on a free instance, which may experience delays due to inactivity. Your request might take up to 50 seconds or more to process..")
+    setRequestMessage("")
     setLoading(true);
     try {
       const res = await axios.post(loginRoute, loginData);

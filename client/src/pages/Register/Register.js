@@ -55,7 +55,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     console.log("FormData", formData);
     setLoading(true);
-    setRequestMessage("Please note that our servers are currently hosted on a free instance, which may experience delays due to inactivity. Your request might take up to 50 seconds or more to process..")
+    setRequestMessage("")
     e.preventDefault();
     const validateError = handleValidations();
     if(validateError) {
