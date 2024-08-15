@@ -16,7 +16,7 @@ dotenv.config();
 const PORT = 8000;
 
 
-const allowedOrigins = ['https://nexus-chat-app.vercel.app'];
+const allowedOrigins = ['https://nexus-chat-app.vercel.app', 'https://nexus-chat-9v3v.onrender.com'];
 
 app.use(cors({
   origin: function (origin, callback) {
