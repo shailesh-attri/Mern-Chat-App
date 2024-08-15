@@ -10,6 +10,7 @@ const connectDatabase = async()=>{
         
     } catch (error) {
         console.log("Found error: " + error.message);
+        console.log("Found error: " + error);
     }
 }
 export default connectDatabase
