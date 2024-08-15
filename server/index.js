@@ -15,13 +15,8 @@ dotenv.config();
 
 const PORT = 8000;
 
-const corsOptions = {
-  origin: ['https://nexus-chat-app.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-};
 
-// Set up CORS globally for all routes
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Other middleware and routes
 app.use(bodyParser.json());
