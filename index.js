@@ -13,7 +13,7 @@ import { app, server } from './socket/socket.io.js';
 
 dotenv.config();
 
-const PORT = 8000;
+const PORT = process.env.PORT || 5000;
 
 
 const allowedOrigins = ['https://nexus-chat-app.vercel.app', "https://nexus-chat-ebon.vercel.app", 'https://nexus-chat-9v3v.onrender.com'];
@@ -64,6 +64,6 @@ if (process.env.NODE_ENV === 'production') {
 connectDatabase();
 
 // Start the server
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on Port: ${PORT}`);
 });
