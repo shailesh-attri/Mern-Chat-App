@@ -109,6 +109,7 @@ const userAuthController = {
   // Controller for user login
   login: async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(`login callback function called with email:${email} and password:${password}`)
     try {
       const newEmail = email.toLowerCase();
       const User = await user.findOne({ email: newEmail });
