@@ -109,31 +109,41 @@ const userAuthController = {
   // Controller for user login
   login: async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(`login callback function called with email:${email} and password:${password}`)
+    console.log(`Login initiated with email: ${email}`);
+
     try {
       const newEmail = email.toLowerCase();
+      console.log("Finding user with email:", newEmail);
+
       const User = await user.findOne({ email: newEmail });
+      console.log("User found:", User);
+
       if (!User) {
-        res.status(404).send({ message: "User not found" });
-      } else {
-        const comparePassword = await bcrypt.compare(password, User.password);
-
-        if (!comparePassword) {
-          return res.status(401).json({ message: "Invalid password" });
-        }
-
-        const { _id: id } = User;
-        // JWT token generation
-        const time = "15d";
-        const token = generateTokenAndSetCookie(id, time);
-        return res.status(200).json({
-          message: "Login successful",
-          token,
-          id,
-        });
+        return res.status(404).send({ message: "User not found" });
       }
+
+      console.log("Comparing passwords...");
+      const comparePassword = await bcrypt.compare(password, User.password);
+      console.log("Password comparison result:", comparePassword);
+
+      if (!comparePassword) {
+        return res.status(401).json({ message: "Invalid password" });
+      }
+
+      const { _id: id } = User;
+      const time = "15d";
+      console.log("Generating token...");
+      const token = generateTokenAndSetCookie(id, time);
+      console.log("Token generated:", token);
+
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        id,
+      });
     } catch (error) {
-      res.status(500).send({ message: "Internal Server Error" });
+      console.error("Login Error:", error);
+      res.status(500).send({ message: "Internal Server Error", error: error.message });
     }
   },
 
